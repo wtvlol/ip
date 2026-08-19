@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 /**
- * Greets the user, echoes their commands, and exits when they enter {@code bye}.
+ * Stores tasks entered by the user, lists them on request, and exits on {@code bye}.
  */
 public class Groot {
     public static void main(String[] args) {
@@ -30,6 +30,8 @@ public class Groot {
         System.out.println("What can I do for you?");
         System.out.println(separator);
 
+        String[] tasks = new String[100];
+        int taskCount = 0;
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -41,7 +43,15 @@ public class Groot {
                 break;
             }
 
-            System.out.println(" " + command);
+            if (command.equals("list")) {
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println((i + 1) + ". " + tasks[i]);
+                }
+            } else {
+                tasks[taskCount] = command;
+                taskCount++;
+                System.out.println(" added: " + command);
+            }
             System.out.println(separator);
         }
     }

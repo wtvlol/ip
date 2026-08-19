@@ -1,6 +1,6 @@
 # Groot project template
 
-Groot is a simple Java chatbot that displays a Groot-themed banner and echoes the user's commands. Enter `bye` to exit the chatbot. Given below are instructions on how to run it.
+Groot is a simple Java chatbot that stores tasks in memory. Enter `list` to display the saved tasks or `bye` to exit the chatbot. Given below are instructions on how to run it.
 
 ## Setting up in Intellij
 
@@ -34,13 +34,18 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    Hello! I'm Groot.
    What can I do for you?
    ____________________________________________________________
+   read book
+   ____________________________________________________________
+    added: read book
+   ____________________________________________________________
+   return book
+   ____________________________________________________________
+    added: return book
+   ____________________________________________________________
    list
    ____________________________________________________________
-    list
-   ____________________________________________________________
-   blah
-   ____________________________________________________________
-    blah
+   1. read book
+   2. return book
    ____________________________________________________________
    bye
    ____________________________________________________________
