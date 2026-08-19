@@ -1,6 +1,6 @@
 # Groot project template
 
-Groot is a simple Java chatbot that stores tasks in memory. Enter `list` to display the saved tasks, `mark TASK_NUMBER` to mark a task as done, `unmark TASK_NUMBER` to mark it as not done, or `bye` to exit the chatbot. Given below are instructions on how to run it.
+Groot is a simple Java chatbot that stores todos, deadlines, and events in memory. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by DATE`, or `event DESCRIPTION /from START /to END` to add tasks. Enter `list` to display them, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, and `bye` to exit. Dates and times are stored as text.
 
 ## Setting up in Intellij
 
@@ -34,48 +34,42 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    Hello! I'm Groot.
    What can I do for you?
    ____________________________________________________________
-   read book
+   todo borrow book
    ____________________________________________________________
-    added: read book
+    Got it. I've added this task:
+      [T][ ] borrow book
+    Now you have 1 task in the list.
    ____________________________________________________________
-   return book
+   deadline return book /by Sunday
    ____________________________________________________________
-    added: return book
+    Got it. I've added this task:
+      [D][ ] return book (by: Sunday)
+    Now you have 2 tasks in the list.
    ____________________________________________________________
-   buy bread
+   event project meeting /from Mon 2pm /to 4pm
    ____________________________________________________________
-    added: buy bread
+    Got it. I've added this task:
+      [E][ ] project meeting (from: Mon 2pm to: 4pm)
+    Now you have 3 tasks in the list.
    ____________________________________________________________
    list
    ____________________________________________________________
     Here are the tasks in your list:
-    1.[ ] read book
-    2.[ ] return book
-    3.[ ] buy bread
+    1.[T][ ] borrow book
+    2.[D][ ] return book (by: Sunday)
+    3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
    ____________________________________________________________
    mark 2
    ____________________________________________________________
     Nice! I've marked this task as done:
-      [X] return book
+      [D][X] return book (by: Sunday)
    ____________________________________________________________
    list
    ____________________________________________________________
     Here are the tasks in your list:
-    1.[ ] read book
-    2.[X] return book
-    3.[ ] buy bread
-   ____________________________________________________________
-   unmark 2
-   ____________________________________________________________
-    OK, I've marked this task as not done yet:
-      [ ] return book
-   ____________________________________________________________
-   list
-   ____________________________________________________________
-    Here are the tasks in your list:
-    1.[ ] read book
-    2.[ ] return book
-    3.[ ] buy bread
+    1.[T][ ] borrow book
+    2.[D][X] return book (by: Sunday)
+    3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
    ____________________________________________________________
    bye
    ____________________________________________________________

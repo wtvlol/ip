@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 /**
- * Stores tasks, lists their completion status, marks or unmarks them, and exits on {@code bye}.
+ * Stores todos, deadlines, and events; manages their status; and exits on {@code bye}.
  */
 public class Groot {
     public static void main(String[] args) {
@@ -58,10 +58,38 @@ public class Groot {
                 tasks[taskIndex].markAsNotDone();
                 System.out.println(" OK, I've marked this task as not done yet:");
                 System.out.println("   " + tasks[taskIndex]);
-            } else {
-                tasks[taskCount] = new Task(command);
+            } else if (command.startsWith("todo ")) {
+                String description = command.substring(5);
+                tasks[taskCount] = new Todo(description);
+                System.out.println(" Got it. I've added this task:");
+                System.out.println("   " + tasks[taskCount]);
                 taskCount++;
-                System.out.println(" added: " + command);
+                System.out.println(" Now you have " + taskCount + " task"
+                        + (taskCount == 1 ? "" : "s") + " in the list.");
+            } else if (command.startsWith("deadline ")) {
+                String arguments = command.substring(9);
+                int byIndex = arguments.indexOf(" /by ");
+                String description = arguments.substring(0, byIndex);
+                String by = arguments.substring(byIndex + 5);
+                tasks[taskCount] = new Deadline(description, by);
+                System.out.println(" Got it. I've added this task:");
+                System.out.println("   " + tasks[taskCount]);
+                taskCount++;
+                System.out.println(" Now you have " + taskCount + " task"
+                        + (taskCount == 1 ? "" : "s") + " in the list.");
+            } else if (command.startsWith("event ")) {
+                String arguments = command.substring(6);
+                int fromIndex = arguments.indexOf(" /from ");
+                int toIndex = arguments.indexOf(" /to ", fromIndex + 7);
+                String description = arguments.substring(0, fromIndex);
+                String from = arguments.substring(fromIndex + 7, toIndex);
+                String to = arguments.substring(toIndex + 5);
+                tasks[taskCount] = new Event(description, from, to);
+                System.out.println(" Got it. I've added this task:");
+                System.out.println("   " + tasks[taskCount]);
+                taskCount++;
+                System.out.println(" Now you have " + taskCount + " task"
+                        + (taskCount == 1 ? "" : "s") + " in the list.");
             }
             System.out.println(separator);
         }
