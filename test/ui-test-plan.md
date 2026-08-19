@@ -133,13 +133,15 @@ ____________________________________________________________
 
 ## TC3: Reject invalid commands without corrupting tasks
 
-**Aim:** Verify required command errors and invalid mark/unmark arguments while ensuring rejected commands do not change stored tasks.
+**Aim:** Verify unknown commands, invalid arguments, and argumentless command boundaries while ensuring rejected commands do not change stored tasks or end the session.
 
 ### Input
 
 ```text
 todo
 blah
+list extra
+bye now
 todo read book
 mark
 mark two
@@ -175,6 +177,12 @@ What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
  Oops! A todo needs a description.
+____________________________________________________________
+____________________________________________________________
+ Oops! I don't recognise that command.
+____________________________________________________________
+____________________________________________________________
+ Oops! I don't recognise that command.
 ____________________________________________________________
 ____________________________________________________________
  Oops! I don't recognise that command.

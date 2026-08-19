@@ -34,46 +34,60 @@ public class Groot {
 
         ArrayList<Task> tasks = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
+        inputLoop:
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine().trim();
             System.out.println(separator);
 
             try {
-                if (command.equals("bye")) {
-                    System.out.println(" Bye. Hope to see you again soon!");
-                    System.out.println(separator);
-                    break;
+                if (command.isEmpty()) {
+                    throw new GrootException("Oops! Please enter a command.");
                 }
 
-                if (command.equals("list")) {
+                CommandType commandType = CommandType.from(command);
+                switch (commandType) {
+                case BYE:
+                    System.out.println(" Bye. Hope to see you again soon!");
+                    System.out.println(separator);
+                    break inputLoop;
+                case LIST:
                     System.out.println(" Here are the tasks in your list:");
                     for (int i = 0; i < tasks.size(); i++) {
                         System.out.println(" " + (i + 1) + "." + tasks.get(i));
                     }
-                } else if (command.equals("mark") || command.startsWith("mark ")) {
-                    int taskIndex = getTaskIndex(command, "mark", tasks.size());
+                    break;
+                case MARK:
+                    int taskIndex = getTaskIndex(command, commandType, tasks.size());
                     tasks.get(taskIndex).markAsDone();
                     System.out.println(" Nice! I've marked this task as done:");
                     System.out.println("   " + tasks.get(taskIndex));
-                } else if (command.equals("unmark") || command.startsWith("unmark ")) {
-                    int taskIndex = getTaskIndex(command, "unmark", tasks.size());
-                    tasks.get(taskIndex).markAsNotDone();
+                    break;
+                case UNMARK:
+                    int unmarkedTaskIndex = getTaskIndex(command, commandType, tasks.size());
+                    tasks.get(unmarkedTaskIndex).markAsNotDone();
                     System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("   " + tasks.get(taskIndex));
-                } else if (command.equals("delete") || command.startsWith("delete ")) {
-                    int taskIndex = getTaskIndex(command, "delete", tasks.size());
-                    Task removedTask = tasks.remove(taskIndex);
+                    System.out.println("   " + tasks.get(unmarkedTaskIndex));
+                    break;
+                case DELETE:
+                    int deletedTaskIndex = getTaskIndex(command, commandType, tasks.size());
+                    Task removedTask = tasks.remove(deletedTaskIndex);
                     System.out.println(" Noted. I've removed this task:");
                     System.out.println("   " + removedTask);
                     System.out.println(" Now you have " + tasks.size() + " task"
                             + (tasks.size() == 1 ? "" : "s") + " in the list.");
-                } else {
-                    Task task = createTask(command);
+                    break;
+                case TODO:
+                case DEADLINE:
+                case EVENT:
+                    Task task = createTask(command, commandType);
                     tasks.add(task);
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + task);
                     System.out.println(" Now you have " + tasks.size() + " task"
                             + (tasks.size() == 1 ? "" : "s") + " in the list.");
+                    break;
+                case UNKNOWN:
+                    throw new GrootException("Oops! I don't recognise that command.");
                 }
             } catch (GrootException error) {
                 System.out.println(" " + error.getMessage());
@@ -86,24 +100,21 @@ public class Groot {
      * Converts a task command into the corresponding task subtype.
      *
      * @param command Full command entered by the user.
+     * @param commandType Type of task to create.
      * @return A todo, deadline, or event described by the command.
-     * @throws GrootException If the command is unknown or required task details are missing.
+     * @throws GrootException If required task details are missing.
      */
-    private static Task createTask(String command) throws GrootException {
-        if (command.isEmpty()) {
-            throw new GrootException("Oops! Please enter a command.");
-        }
-
-        if (command.equals("todo") || command.startsWith("todo ")) {
-            String description = command.substring(4).trim();
+    private static Task createTask(String command, CommandType commandType) throws GrootException {
+        if (commandType == CommandType.TODO) {
+            String description = command.substring(commandType.getKeyword().length()).trim();
             if (description.isEmpty()) {
                 throw new GrootException("Oops! A todo needs a description.");
             }
             return new Todo(description);
         }
 
-        if (command.equals("deadline") || command.startsWith("deadline ")) {
-            String arguments = command.substring(8).trim();
+        if (commandType == CommandType.DEADLINE) {
+            String arguments = command.substring(commandType.getKeyword().length()).trim();
             int byIndex = arguments.indexOf("/by");
             if (byIndex < 0) {
                 throw new GrootException("Oops! Use: deadline DESCRIPTION /by DATE");
@@ -119,8 +130,8 @@ public class Groot {
             return new Deadline(description, by);
         }
 
-        if (command.equals("event") || command.startsWith("event ")) {
-            String arguments = command.substring(5).trim();
+        if (commandType == CommandType.EVENT) {
+            String arguments = command.substring(commandType.getKeyword().length()).trim();
             int fromIndex = arguments.indexOf("/from");
             int toIndex = fromIndex < 0 ? -1 : arguments.indexOf("/to", fromIndex + 5);
             if (fromIndex < 0 || toIndex < 0) {
@@ -141,20 +152,21 @@ public class Groot {
             return new Event(description, from, to);
         }
 
-        throw new GrootException("Oops! I don't recognise that command.");
+        throw new IllegalArgumentException("Command type does not create a task: " + commandType);
     }
 
     /**
      * Parses and validates the one-based task number in a mark, unmark, or delete command.
      *
      * @param command Full command entered by the user.
-     * @param action Command action, such as {@code mark}, {@code unmark}, or {@code delete}.
+     * @param commandType Type of command that selects a task.
      * @param taskCount Number of tasks currently stored.
      * @return Zero-based index of the selected task.
      * @throws GrootException If the task number is missing, non-numeric, or out of range.
      */
-    private static int getTaskIndex(String command, String action, int taskCount)
+    private static int getTaskIndex(String command, CommandType commandType, int taskCount)
             throws GrootException {
+        String action = commandType.getKeyword();
         String numberText = command.substring(action.length()).trim();
         if (numberText.isEmpty()) {
             throw new GrootException("Oops! Tell me which task to " + action + ".");
