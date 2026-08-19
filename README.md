@@ -1,6 +1,6 @@
 # Groot project template
 
-Groot is a simple Java chatbot that stores tasks in memory. Enter `list` to display the saved tasks or `bye` to exit the chatbot. Given below are instructions on how to run it.
+Groot is a simple Java chatbot that stores tasks in memory. Enter `list` to display the saved tasks, `mark TASK_NUMBER` to mark a task as done, or `bye` to exit the chatbot. Given below are instructions on how to run it.
 
 ## Setting up in Intellij
 
@@ -42,10 +42,28 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    ____________________________________________________________
     added: return book
    ____________________________________________________________
+   buy bread
+   ____________________________________________________________
+    added: buy bread
+   ____________________________________________________________
    list
    ____________________________________________________________
-   1. read book
-   2. return book
+    Here are the tasks in your list:
+    1.[ ] read book
+    2.[ ] return book
+    3.[ ] buy bread
+   ____________________________________________________________
+   mark 2
+   ____________________________________________________________
+    Nice! I've marked this task as done:
+      [X] return book
+   ____________________________________________________________
+   list
+   ____________________________________________________________
+    Here are the tasks in your list:
+    1.[ ] read book
+    2.[X] return book
+    3.[ ] buy bread
    ____________________________________________________________
    bye
    ____________________________________________________________

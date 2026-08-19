@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 /**
- * Stores tasks entered by the user, lists them on request, and exits on {@code bye}.
+ * Stores tasks, lists their completion status, marks them as done, and exits on {@code bye}.
  */
 public class Groot {
     public static void main(String[] args) {
@@ -31,6 +31,7 @@ public class Groot {
         System.out.println(separator);
 
         String[] tasks = new String[100];
+        boolean[] isDone = new boolean[100];
         int taskCount = 0;
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -44,9 +45,16 @@ public class Groot {
             }
 
             if (command.equals("list")) {
+                System.out.println(" Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + ". " + tasks[i]);
+                    String status = isDone[i] ? "[X]" : "[ ]";
+                    System.out.println(" " + (i + 1) + "." + status + " " + tasks[i]);
                 }
+            } else if (command.startsWith("mark ")) {
+                int taskIndex = Integer.parseInt(command.substring(5)) - 1;
+                isDone[taskIndex] = true;
+                System.out.println(" Nice! I've marked this task as done:");
+                System.out.println("   [X] " + tasks[taskIndex]);
             } else {
                 tasks[taskCount] = command;
                 taskCount++;
