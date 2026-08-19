@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 /**
- * Stores tasks, lists their completion status, marks them as done, and exits on {@code bye}.
+ * Stores tasks, lists their completion status, marks or unmarks them, and exits on {@code bye}.
  */
 public class Groot {
     public static void main(String[] args) {
@@ -55,6 +55,11 @@ public class Groot {
                 isDone[taskIndex] = true;
                 System.out.println(" Nice! I've marked this task as done:");
                 System.out.println("   [X] " + tasks[taskIndex]);
+            } else if (command.startsWith("unmark ")) {
+                int taskIndex = Integer.parseInt(command.substring(7)) - 1;
+                isDone[taskIndex] = false;
+                System.out.println(" OK, I've marked this task as not done yet:");
+                System.out.println("   [ ] " + tasks[taskIndex]);
             } else {
                 tasks[taskCount] = command;
                 taskCount++;
