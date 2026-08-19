@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -31,8 +32,7 @@ public class Groot {
         System.out.println("What can I do for you?");
         System.out.println(separator);
 
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine().trim();
@@ -47,30 +47,33 @@ public class Groot {
 
                 if (command.equals("list")) {
                     System.out.println(" Here are the tasks in your list:");
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println(" " + (i + 1) + "." + tasks[i]);
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println(" " + (i + 1) + "." + tasks.get(i));
                     }
                 } else if (command.equals("mark") || command.startsWith("mark ")) {
-                    int taskIndex = getTaskIndex(command, "mark", taskCount);
-                    tasks[taskIndex].markAsDone();
+                    int taskIndex = getTaskIndex(command, "mark", tasks.size());
+                    tasks.get(taskIndex).markAsDone();
                     System.out.println(" Nice! I've marked this task as done:");
-                    System.out.println("   " + tasks[taskIndex]);
+                    System.out.println("   " + tasks.get(taskIndex));
                 } else if (command.equals("unmark") || command.startsWith("unmark ")) {
-                    int taskIndex = getTaskIndex(command, "unmark", taskCount);
-                    tasks[taskIndex].markAsNotDone();
+                    int taskIndex = getTaskIndex(command, "unmark", tasks.size());
+                    tasks.get(taskIndex).markAsNotDone();
                     System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("   " + tasks[taskIndex]);
+                    System.out.println("   " + tasks.get(taskIndex));
+                } else if (command.equals("delete") || command.startsWith("delete ")) {
+                    int taskIndex = getTaskIndex(command, "delete", tasks.size());
+                    Task removedTask = tasks.remove(taskIndex);
+                    System.out.println(" Noted. I've removed this task:");
+                    System.out.println("   " + removedTask);
+                    System.out.println(" Now you have " + tasks.size() + " task"
+                            + (tasks.size() == 1 ? "" : "s") + " in the list.");
                 } else {
                     Task task = createTask(command);
-                    if (taskCount >= tasks.length) {
-                        throw new GrootException("Oops! The task list is full.");
-                    }
-                    tasks[taskCount] = task;
+                    tasks.add(task);
                     System.out.println(" Got it. I've added this task:");
-                    System.out.println("   " + tasks[taskCount]);
-                    taskCount++;
-                    System.out.println(" Now you have " + taskCount + " task"
-                            + (taskCount == 1 ? "" : "s") + " in the list.");
+                    System.out.println("   " + task);
+                    System.out.println(" Now you have " + tasks.size() + " task"
+                            + (tasks.size() == 1 ? "" : "s") + " in the list.");
                 }
             } catch (GrootException error) {
                 System.out.println(" " + error.getMessage());
@@ -142,10 +145,10 @@ public class Groot {
     }
 
     /**
-     * Parses and validates the one-based task number in a mark or unmark command.
+     * Parses and validates the one-based task number in a mark, unmark, or delete command.
      *
      * @param command Full command entered by the user.
-     * @param action Command action, either {@code mark} or {@code unmark}.
+     * @param action Command action, such as {@code mark}, {@code unmark}, or {@code delete}.
      * @param taskCount Number of tasks currently stored.
      * @return Zero-based index of the selected task.
      * @throws GrootException If the task number is missing, non-numeric, or out of range.

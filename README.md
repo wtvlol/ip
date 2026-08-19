@@ -1,6 +1,6 @@
 # Groot project template
 
-Groot is a simple Java chatbot that stores todos, deadlines, and events in memory. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by DATE`, or `event DESCRIPTION /from START /to END` to add tasks. Enter `list` to display them, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, and `bye` to exit. Dates and times are stored as text. Invalid commands and malformed task details produce an explanatory error without ending the program.
+Groot is a simple Java chatbot that stores todos, deadlines, and events in memory. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by DATE`, or `event DESCRIPTION /from START /to END` to add tasks. Enter `list` to display them, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, `delete TASK_NUMBER` to remove one, and `bye` to exit. Dates and times are stored as text. Invalid commands and malformed task details produce an explanatory error without ending the program.
 
 ## Setting up in Intellij
 
@@ -70,6 +70,12 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
     1.[T][ ] borrow book
     2.[D][X] return book (by: Sunday)
     3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+   ____________________________________________________________
+   delete 1
+   ____________________________________________________________
+    Noted. I've removed this task:
+      [T][ ] borrow book
+    Now you have 2 tasks in the list.
    ____________________________________________________________
    bye
    ____________________________________________________________
