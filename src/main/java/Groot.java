@@ -1,7 +1,8 @@
 import java.util.Scanner;
 
 /**
- * Stores todos, deadlines, and events; manages their status; and exits on {@code bye}.
+ * Stores todos, deadlines, and events; manages their status; handles input errors;
+ * and exits on {@code bye}.
  */
 public class Groot {
     public static void main(String[] args) {
@@ -34,64 +35,138 @@ public class Groot {
         int taskCount = 0;
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().trim();
             System.out.println(separator);
 
-            if (command.equals("bye")) {
-                System.out.println(" Bye. Hope to see you again soon!");
-                System.out.println(separator);
-                break;
-            }
-
-            if (command.equals("list")) {
-                System.out.println(" Here are the tasks in your list:");
-                for (int i = 0; i < taskCount; i++) {
-                    System.out.println(" " + (i + 1) + "." + tasks[i]);
+            try {
+                if (command.equals("bye")) {
+                    System.out.println(" Bye. Hope to see you again soon!");
+                    System.out.println(separator);
+                    break;
                 }
-            } else if (command.startsWith("mark ")) {
-                int taskIndex = Integer.parseInt(command.substring(5)) - 1;
-                tasks[taskIndex].markAsDone();
-                System.out.println(" Nice! I've marked this task as done:");
-                System.out.println("   " + tasks[taskIndex]);
-            } else if (command.startsWith("unmark ")) {
-                int taskIndex = Integer.parseInt(command.substring(7)) - 1;
-                tasks[taskIndex].markAsNotDone();
-                System.out.println(" OK, I've marked this task as not done yet:");
-                System.out.println("   " + tasks[taskIndex]);
-            } else if (command.startsWith("todo ")) {
-                String description = command.substring(5);
-                tasks[taskCount] = new Todo(description);
-                System.out.println(" Got it. I've added this task:");
-                System.out.println("   " + tasks[taskCount]);
-                taskCount++;
-                System.out.println(" Now you have " + taskCount + " task"
-                        + (taskCount == 1 ? "" : "s") + " in the list.");
-            } else if (command.startsWith("deadline ")) {
-                String arguments = command.substring(9);
-                int byIndex = arguments.indexOf(" /by ");
-                String description = arguments.substring(0, byIndex);
-                String by = arguments.substring(byIndex + 5);
-                tasks[taskCount] = new Deadline(description, by);
-                System.out.println(" Got it. I've added this task:");
-                System.out.println("   " + tasks[taskCount]);
-                taskCount++;
-                System.out.println(" Now you have " + taskCount + " task"
-                        + (taskCount == 1 ? "" : "s") + " in the list.");
-            } else if (command.startsWith("event ")) {
-                String arguments = command.substring(6);
-                int fromIndex = arguments.indexOf(" /from ");
-                int toIndex = arguments.indexOf(" /to ", fromIndex + 7);
-                String description = arguments.substring(0, fromIndex);
-                String from = arguments.substring(fromIndex + 7, toIndex);
-                String to = arguments.substring(toIndex + 5);
-                tasks[taskCount] = new Event(description, from, to);
-                System.out.println(" Got it. I've added this task:");
-                System.out.println("   " + tasks[taskCount]);
-                taskCount++;
-                System.out.println(" Now you have " + taskCount + " task"
-                        + (taskCount == 1 ? "" : "s") + " in the list.");
+
+                if (command.equals("list")) {
+                    System.out.println(" Here are the tasks in your list:");
+                    for (int i = 0; i < taskCount; i++) {
+                        System.out.println(" " + (i + 1) + "." + tasks[i]);
+                    }
+                } else if (command.equals("mark") || command.startsWith("mark ")) {
+                    int taskIndex = getTaskIndex(command, "mark", taskCount);
+                    tasks[taskIndex].markAsDone();
+                    System.out.println(" Nice! I've marked this task as done:");
+                    System.out.println("   " + tasks[taskIndex]);
+                } else if (command.equals("unmark") || command.startsWith("unmark ")) {
+                    int taskIndex = getTaskIndex(command, "unmark", taskCount);
+                    tasks[taskIndex].markAsNotDone();
+                    System.out.println(" OK, I've marked this task as not done yet:");
+                    System.out.println("   " + tasks[taskIndex]);
+                } else {
+                    Task task = createTask(command);
+                    if (taskCount >= tasks.length) {
+                        throw new GrootException("Oops! The task list is full.");
+                    }
+                    tasks[taskCount] = task;
+                    System.out.println(" Got it. I've added this task:");
+                    System.out.println("   " + tasks[taskCount]);
+                    taskCount++;
+                    System.out.println(" Now you have " + taskCount + " task"
+                            + (taskCount == 1 ? "" : "s") + " in the list.");
+                }
+            } catch (GrootException error) {
+                System.out.println(" " + error.getMessage());
             }
             System.out.println(separator);
         }
+    }
+
+    /**
+     * Converts a task command into the corresponding task subtype.
+     *
+     * @param command Full command entered by the user.
+     * @return A todo, deadline, or event described by the command.
+     * @throws GrootException If the command is unknown or required task details are missing.
+     */
+    private static Task createTask(String command) throws GrootException {
+        if (command.isEmpty()) {
+            throw new GrootException("Oops! Please enter a command.");
+        }
+
+        if (command.equals("todo") || command.startsWith("todo ")) {
+            String description = command.substring(4).trim();
+            if (description.isEmpty()) {
+                throw new GrootException("Oops! A todo needs a description.");
+            }
+            return new Todo(description);
+        }
+
+        if (command.equals("deadline") || command.startsWith("deadline ")) {
+            String arguments = command.substring(8).trim();
+            int byIndex = arguments.indexOf("/by");
+            if (byIndex < 0) {
+                throw new GrootException("Oops! Use: deadline DESCRIPTION /by DATE");
+            }
+            String description = arguments.substring(0, byIndex).trim();
+            String by = arguments.substring(byIndex + 3).trim();
+            if (description.isEmpty()) {
+                throw new GrootException("Oops! A deadline needs a description.");
+            }
+            if (by.isEmpty()) {
+                throw new GrootException("Oops! A deadline needs a date or time after /by.");
+            }
+            return new Deadline(description, by);
+        }
+
+        if (command.equals("event") || command.startsWith("event ")) {
+            String arguments = command.substring(5).trim();
+            int fromIndex = arguments.indexOf("/from");
+            int toIndex = fromIndex < 0 ? -1 : arguments.indexOf("/to", fromIndex + 5);
+            if (fromIndex < 0 || toIndex < 0) {
+                throw new GrootException("Oops! Use: event DESCRIPTION /from START /to END");
+            }
+            String description = arguments.substring(0, fromIndex).trim();
+            String from = arguments.substring(fromIndex + 5, toIndex).trim();
+            String to = arguments.substring(toIndex + 3).trim();
+            if (description.isEmpty()) {
+                throw new GrootException("Oops! An event needs a description.");
+            }
+            if (from.isEmpty()) {
+                throw new GrootException("Oops! An event needs a start date or time after /from.");
+            }
+            if (to.isEmpty()) {
+                throw new GrootException("Oops! An event needs an end date or time after /to.");
+            }
+            return new Event(description, from, to);
+        }
+
+        throw new GrootException("Oops! I don't recognise that command.");
+    }
+
+    /**
+     * Parses and validates the one-based task number in a mark or unmark command.
+     *
+     * @param command Full command entered by the user.
+     * @param action Command action, either {@code mark} or {@code unmark}.
+     * @param taskCount Number of tasks currently stored.
+     * @return Zero-based index of the selected task.
+     * @throws GrootException If the task number is missing, non-numeric, or out of range.
+     */
+    private static int getTaskIndex(String command, String action, int taskCount)
+            throws GrootException {
+        String numberText = command.substring(action.length()).trim();
+        if (numberText.isEmpty()) {
+            throw new GrootException("Oops! Tell me which task to " + action + ".");
+        }
+
+        int taskNumber;
+        try {
+            taskNumber = Integer.parseInt(numberText);
+        } catch (NumberFormatException error) {
+            throw new GrootException("Oops! The task number must be a whole number.");
+        }
+
+        if (taskNumber < 1 || taskNumber > taskCount) {
+            throw new GrootException("Oops! Task " + taskNumber + " is not in the list.");
+        }
+        return taskNumber - 1;
     }
 }

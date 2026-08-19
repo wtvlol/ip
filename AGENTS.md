@@ -33,6 +33,7 @@ Ensure that Java 25 is used when running the application or build tasks. On macO
 After every code update, before handing the work back to the user:
 
 1. Review `test/ui-test-plan.md` and update its test aims, inputs, or expected outputs when the code change affects UI behavior or requires additional coverage. Leave it unchanged only when the existing cases remain accurate and sufficient.
+   For command parsing or error-handling changes, add incorrect and edge-case inputs, interleave them with valid commands, and verify afterward that rejected inputs did not change internal state.
 2. Invoke the `$test-ui` skill to run the recorded UI test plan. A separate compilation or manual run does not replace this step.
 3. If a UI test fails, stop the test session immediately and report the failing case together with its actual and expected outputs. Do not report the code update as complete unless the tests pass or the user explicitly accepts the failure.
 4. Include the generated console input/output session record in the final handoff.
