@@ -30,8 +30,7 @@ public class Groot {
         System.out.println("What can I do for you?");
         System.out.println(separator);
 
-        String[] tasks = new String[100];
-        boolean[] isDone = new boolean[100];
+        Task[] tasks = new Task[100];
         int taskCount = 0;
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -47,21 +46,20 @@ public class Groot {
             if (command.equals("list")) {
                 System.out.println(" Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    String status = isDone[i] ? "[X]" : "[ ]";
-                    System.out.println(" " + (i + 1) + "." + status + " " + tasks[i]);
+                    System.out.println(" " + (i + 1) + "." + tasks[i]);
                 }
             } else if (command.startsWith("mark ")) {
                 int taskIndex = Integer.parseInt(command.substring(5)) - 1;
-                isDone[taskIndex] = true;
+                tasks[taskIndex].markAsDone();
                 System.out.println(" Nice! I've marked this task as done:");
-                System.out.println("   [X] " + tasks[taskIndex]);
+                System.out.println("   " + tasks[taskIndex]);
             } else if (command.startsWith("unmark ")) {
                 int taskIndex = Integer.parseInt(command.substring(7)) - 1;
-                isDone[taskIndex] = false;
+                tasks[taskIndex].markAsNotDone();
                 System.out.println(" OK, I've marked this task as not done yet:");
-                System.out.println("   [ ] " + tasks[taskIndex]);
+                System.out.println("   " + tasks[taskIndex]);
             } else {
-                tasks[taskCount] = command;
+                tasks[taskCount] = new Task(command);
                 taskCount++;
                 System.out.println(" added: " + command);
             }
