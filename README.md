@@ -84,3 +84,15 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    ```
 
 **Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+
+## AI use
+
+This project was developed with assistance from OpenAI Codex. AI was used to:
+
+- review requirements and suggest suitable Java designs;
+- help implement task deletion, collection-based storage, command enums, and error handling;
+- draft and review console UI tests, including invalid and edge-case inputs;
+- improve documentation and Git commit messages; and
+- run checks that compare the program's actual output with its expected output.
+
+All AI-generated suggestions were reviewed before use. The source code was inspected, and the recorded UI test plan was run with Java 25 to verify the resulting behavior. The project author remains responsible for the final implementation.
