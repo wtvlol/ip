@@ -10,7 +10,10 @@ import java.util.List;
  * Loads and saves the task list using the local data file.
  */
 public class Storage {
+    /** Relative directory resolved using the current operating system's file system. */
     private static final Path DATA_DIRECTORY = Path.of("data");
+
+    /** Data file built from path components without a platform-specific separator. */
     private static final Path DATA_FILE = DATA_DIRECTORY.resolve("groot.txt");
 
     /**
@@ -173,6 +176,6 @@ public class Storage {
     private static GrootException invalidDataException(int lineNumber, Exception cause) {
         return new GrootException(
                 "Oops! I couldn't load your tasks because line " + lineNumber
-                        + " in data/groot.txt is invalid.", cause);
+                        + " in " + DATA_FILE + " is invalid.", cause);
     }
 }

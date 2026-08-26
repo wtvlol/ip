@@ -1,10 +1,10 @@
 # UI Test Plan
 
-Each test case starts a fresh instance of `Groot`. Expected-output blocks contain program stdout only; console input is recorded separately.
+Each test case starts a fresh instance of `Groot`. Begin the suite without a `data` directory so TC1 covers first-run startup and later task commands cover automatic directory creation. Expected-output blocks contain program stdout only; console input is recorded separately.
 
 ## TC1: Exit using bye
 
-**Aim:** Verify that Groot starts normally and exits with the farewell message when the user enters `bye`.
+**Aim:** Verify that Groot starts normally without an existing data folder or file and exits with the farewell message when the user enters `bye`.
 
 ### Input
 
