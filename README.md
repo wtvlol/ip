@@ -125,6 +125,7 @@ This project was developed with assistance from OpenAI Codex. AI was used to:
 - help implement task deletion, collection-based storage, command enums, and error handling;
 - organize the Java classes into responsibility-based packages and update their imports;
 - configure and verify Gradle fat-JAR packaging;
+- create and apply the project-specific SE-EDU Java coding-standard skill;
 - draft and review JUnit and console UI tests, including invalid and edge-case inputs;
 - improve documentation and Git commit messages; and
 - run checks that compare the program's actual output with its expected output.
