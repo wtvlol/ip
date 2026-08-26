@@ -103,16 +103,16 @@ public class Storage {
      * Converts one validated data line into its corresponding task subtype.
      */
     private static Task parseTask(String taskLine, int lineNumber) throws GrootException {
-        List<String> taskData = splitDataFields(taskLine);
+        List<String> taskFields = splitDataFields(taskLine);
         try {
-            validateTaskData(taskData);
-            Task task = switch (taskData.get(0)) {
-            case "T" -> new Todo(taskData.get(2));
-            case "D" -> new Deadline(taskData.get(2), LocalDate.parse(taskData.get(3)));
-            case "E" -> new Event(taskData.get(2), taskData.get(3), taskData.get(4));
-            default -> throw new IllegalArgumentException("Unknown task type");
+            validateTaskData(taskFields);
+            Task task = switch (taskFields.get(0)) {
+                case "T" -> new Todo(taskFields.get(2));
+                case "D" -> new Deadline(taskFields.get(2), LocalDate.parse(taskFields.get(3)));
+                case "E" -> new Event(taskFields.get(2), taskFields.get(3), taskFields.get(4));
+                default -> throw new IllegalArgumentException("Unknown task type");
             };
-            if (taskData.get(1).equals("1")) {
+            if (taskFields.get(1).equals("1")) {
                 task.markAsDone();
             }
             return task;
@@ -155,25 +155,25 @@ public class Storage {
     /**
      * Checks field counts, status values, and required text before construction.
      */
-    private static void validateTaskData(List<String> taskData) {
-        if (taskData.size() < 3 || taskData.get(2).isEmpty()) {
+    private static void validateTaskData(List<String> taskFields) {
+        if (taskFields.size() < 3 || taskFields.get(2).isEmpty()) {
             throw new IllegalArgumentException("Missing task fields");
         }
-        if (!taskData.get(1).equals("0") && !taskData.get(1).equals("1")) {
+        if (!taskFields.get(1).equals("0") && !taskFields.get(1).equals("1")) {
             throw new IllegalArgumentException("Invalid task status");
         }
 
-        int expectedFieldCount = switch (taskData.get(0)) {
-        case "T" -> 3;
-        case "D" -> 4;
-        case "E" -> 5;
-        default -> throw new IllegalArgumentException("Unknown task type");
+        int expectedFieldCount = switch (taskFields.get(0)) {
+            case "T" -> 3;
+            case "D" -> 4;
+            case "E" -> 5;
+            default -> throw new IllegalArgumentException("Unknown task type");
         };
-        if (taskData.size() != expectedFieldCount) {
+        if (taskFields.size() != expectedFieldCount) {
             throw new IllegalArgumentException("Incorrect field count");
         }
-        for (int i = 2; i < taskData.size(); i++) {
-            if (taskData.get(i).isEmpty()) {
+        for (int i = 2; i < taskFields.size(); i++) {
+            if (taskFields.get(i).isEmpty()) {
                 throw new IllegalArgumentException("Empty task field");
             }
         }
