@@ -470,6 +470,7 @@ ____________________________________________________________
 todo keep this
 deadline remove this /by Friday
 event team meeting /from 2pm /to 3pm
+todo symbols | and \ slash
 mark 1
 delete 2
 unmark 1
@@ -515,13 +516,18 @@ ____________________________________________________________
  Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] symbols | and \ slash
+ Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
  Nice! I've marked this task as done:
    [T][X] keep this
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
    [D][ ] remove this (by: Friday)
- Now you have 2 tasks in the list.
+ Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  OK, I've marked this task as not done yet:
@@ -544,6 +550,7 @@ ____________________________________________________________
 
 ```text
 list
+delete 1
 delete 1
 delete 1
 bye
@@ -575,15 +582,21 @@ ____________________________________________________________
  Here are the tasks in your list:
  1.[T][X] keep this
  2.[E][ ] team meeting (from: 2pm to: 3pm)
+ 3.[T][ ] symbols | and \ slash
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
    [T][X] keep this
- Now you have 1 task in the list.
+ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
    [E][ ] team meeting (from: 2pm to: 3pm)
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [T][ ] symbols | and \ slash
  Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________

@@ -25,7 +25,8 @@ public class Event extends Task {
      */
     @Override
     public String toDataString() {
-        return "E | " + super.toDataString() + " | " + from + " | " + to;
+        return "E | " + super.toDataString() + " | " + escapeDataField(from)
+                + " | " + escapeDataField(to);
     }
 
     /**

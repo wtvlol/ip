@@ -11,4 +11,14 @@ public class GrootException extends Exception {
     public GrootException(String message) {
         super(message);
     }
+
+    /**
+     * Creates an exception with a user-facing explanation and its technical cause.
+     *
+     * @param message Explanation to display to the user.
+     * @param cause Underlying failure retained for debugging.
+     */
+    public GrootException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
