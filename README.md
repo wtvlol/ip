@@ -95,6 +95,28 @@ The Java source root remains `src/main/java`. Classes are grouped by responsibil
 
 Keep `src/main/java` as the Java source root. Package folders must remain inside that directory so Java and project tools can find them correctly.
 
+## Building and running the fat JAR
+
+The Shadow plugin packages Groot and its runtime dependencies into one executable fat JAR. From the project root, create a fresh JAR on macOS or Linux with:
+
+```shell
+./gradlew clean shadowJar
+```
+
+On Windows, use:
+
+```shell
+gradlew.bat clean shadowJar
+```
+
+The generated file is located at `build/libs/groot.jar`. Run it using Java 25:
+
+```shell
+java -jar build/libs/groot.jar
+```
+
+Groot resolves its `data/groot.txt` path relative to the directory from which the JAR is run. Run the command from the project root to use the project's existing `data` directory.
+
 ## AI use
 
 This project was developed with assistance from OpenAI Codex. AI was used to:
@@ -102,6 +124,7 @@ This project was developed with assistance from OpenAI Codex. AI was used to:
 - review requirements and suggest suitable Java designs;
 - help implement task deletion, collection-based storage, command enums, and error handling;
 - organize the Java classes into responsibility-based packages and update their imports;
+- configure and verify Gradle fat-JAR packaging;
 - draft and review JUnit and console UI tests, including invalid and edge-case inputs;
 - improve documentation and Git commit messages; and
 - run checks that compare the program's actual output with its expected output.
