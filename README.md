@@ -1,6 +1,6 @@
 # Groot project template
 
-Groot is a simple Java chatbot that stores todos, deadlines, and events in memory. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by DATE`, or `event DESCRIPTION /from START /to END` to add tasks. Enter `list` to display them, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, `delete TASK_NUMBER` to remove one, and `bye` to exit. Dates and times are stored as text. Invalid commands and malformed task details produce an explanatory error without ending the program.
+Groot is a simple Java chatbot that saves todos, deadlines, and events between sessions. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by yyyy-MM-dd`, or `event DESCRIPTION /from START /to END` to add tasks. Deadline dates are validated and displayed as `MMM dd yyyy`. Enter `list` to display tasks, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, `delete TASK_NUMBER` to remove one, and `bye` to exit. Invalid commands and malformed task details produce an explanatory error without ending the program.
 
 ## Setting up in Intellij
 
@@ -40,10 +40,10 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
       [T][ ] borrow book
     Now you have 1 task in the list.
    ____________________________________________________________
-   deadline return book /by Sunday
+   deadline return book /by 2019-12-02
    ____________________________________________________________
     Got it. I've added this task:
-      [D][ ] return book (by: Sunday)
+      [D][ ] return book (by: Dec 02 2019)
     Now you have 2 tasks in the list.
    ____________________________________________________________
    event project meeting /from Mon 2pm /to 4pm
@@ -56,19 +56,19 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    ____________________________________________________________
     Here are the tasks in your list:
     1.[T][ ] borrow book
-    2.[D][ ] return book (by: Sunday)
+    2.[D][ ] return book (by: Dec 02 2019)
     3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
    ____________________________________________________________
    mark 2
    ____________________________________________________________
     Nice! I've marked this task as done:
-      [D][X] return book (by: Sunday)
+      [D][X] return book (by: Dec 02 2019)
    ____________________________________________________________
    list
    ____________________________________________________________
     Here are the tasks in your list:
     1.[T][ ] borrow book
-    2.[D][X] return book (by: Sunday)
+    2.[D][X] return book (by: Dec 02 2019)
     3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
    ____________________________________________________________
    delete 1

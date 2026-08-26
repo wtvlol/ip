@@ -3,6 +3,7 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class Storage {
             validateTaskData(taskData);
             Task task = switch (taskData.get(0)) {
             case "T" -> new Todo(taskData.get(2));
-            case "D" -> new Deadline(taskData.get(2), taskData.get(3));
+            case "D" -> new Deadline(taskData.get(2), LocalDate.parse(taskData.get(3)));
             case "E" -> new Event(taskData.get(2), taskData.get(3), taskData.get(4));
             default -> throw new IllegalArgumentException("Unknown task type");
             };
