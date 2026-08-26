@@ -24,7 +24,7 @@ public class Parser {
      * Identifies and validates the command represented by the user's input.
      *
      * @param command Trimmed command entered by the user.
-     * @return Recognised command type.
+     * @return Recognized command type.
      * @throws GrootException If the command is empty or unknown.
      */
     public CommandType parseCommandType(String command) throws GrootException {

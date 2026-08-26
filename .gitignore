@@ -22,5 +22,10 @@ _temp/
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
 /.agents/**
+!/.agents/skills/
+!/.agents/skills/seedu-java-coding-standard/
+!/.agents/skills/seedu-java-coding-standard/**
+!/.agents/skills/seedu-git-standard/
+!/.agents/skills/seedu-git-standard/**
 .gitignore
 *.class
