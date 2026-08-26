@@ -102,8 +102,10 @@ This project was developed with assistance from OpenAI Codex. AI was used to:
 - review requirements and suggest suitable Java designs;
 - help implement task deletion, collection-based storage, command enums, and error handling;
 - organize the Java classes into responsibility-based packages and update their imports;
-- draft and review console UI tests, including invalid and edge-case inputs;
+- draft and review JUnit and console UI tests, including invalid and edge-case inputs;
 - improve documentation and Git commit messages; and
 - run checks that compare the program's actual output with its expected output.
 
 All AI-generated suggestions were reviewed before use. The source code was inspected, and the recorded UI test plan was run with Java 25 to verify the resulting behavior. The project author remains responsible for the final implementation.
+
+The JUnit coverage target is the approximately 50% highest-value methods, prioritizing complex, core, and critical business logic over trivial accessors. After each code change, the affected classes and their JUnit tests must be reviewed and the tests updated as needed to continue meeting this target.

@@ -34,6 +34,14 @@ public class CommandTypeTest {
     }
 
     @Test
+    public void from_multipleSpacesBeforeArguments_returnsMatchingCommandType() {
+        assertEquals(CommandType.MARK, CommandType.from("mark   1"));
+        assertEquals(CommandType.TODO, CommandType.from("todo   read book"));
+        assertEquals(CommandType.DEADLINE,
+                CommandType.from("deadline   return book /by 2019-12-02"));
+    }
+
+    @Test
     public void from_argumentlessCommandWithArguments_returnsUnknown() {
         assertEquals(CommandType.UNKNOWN, CommandType.from("bye now"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("list extra"));
@@ -44,6 +52,13 @@ public class CommandTypeTest {
         assertEquals(CommandType.UNKNOWN, CommandType.from("todoist"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("marked 1"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("events meeting"));
+    }
+
+    @Test
+    public void from_keywordNotAtStartOrWithoutSpaceSeparator_returnsUnknown() {
+        assertEquals(CommandType.UNKNOWN, CommandType.from("please list"));
+        assertEquals(CommandType.UNKNOWN, CommandType.from("todo\tread book"));
+        assertEquals(CommandType.UNKNOWN, CommandType.from("mark\t1"));
     }
 
     @Test

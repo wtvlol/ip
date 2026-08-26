@@ -38,6 +38,10 @@ After every code update, before handing the work back to the user:
 3. If a UI test fails, stop the test session immediately and report the failing case together with its actual and expected outputs. Do not report the code update as complete unless the tests pass or the user explicitly accepts the failure.
 4. Include the generated console input/output session record in the final handoff.
 
+## JUnit testing
+
+After every code change, review the affected classes and update their JUnit tests as needed. Maintain tests for approximately the 50% highest-value methods, prioritizing complex, core, and critical business logic rather than trivial accessors. Run `./gradlew test` before handing the work back to the user.
+
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
