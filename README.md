@@ -1,4 +1,4 @@
-# Groot project template
+# Groot chatbot
 
 Groot is a simple Java chatbot that saves todos, deadlines, and events between sessions. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by yyyy-MM-dd`, or `event DESCRIPTION /from START /to END` to add tasks. Deadline dates are validated and displayed as `MMM dd yyyy`. Enter `list` to display tasks, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, `delete TASK_NUMBER` to remove one, and `bye` to exit. Invalid commands and malformed task details produce an explanatory error without ending the program.
 
@@ -13,7 +13,7 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    1. If there are any further prompts, accept the defaults.
 1. Configure the project to use **JDK 25** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
    In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/Groot.java` file, right-click it, and choose `Run Groot.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see the following output:
+1. After that, locate the `src/main/java/groot/Groot.java` file, right-click it, and choose `Run Groot.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see the following output:
    ```
    ____________________________________________________________
           \  |  /
@@ -83,7 +83,17 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    ____________________________________________________________
    ```
 
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+## Package structure
+
+The Java source root remains `src/main/java`. Classes are grouped by responsibility beneath the `groot` root package:
+
+- `groot`: application entry point and coordination;
+- `groot.exception`: application-specific exceptions;
+- `groot.parser`: command recognition and input parsing;
+- `groot.storage`: loading and saving tasks; and
+- `groot.task`: task models and task-list operations.
+
+Keep `src/main/java` as the Java source root. Package folders must remain inside that directory so Java and project tools can find them correctly.
 
 ## AI use
 
@@ -91,6 +101,7 @@ This project was developed with assistance from OpenAI Codex. AI was used to:
 
 - review requirements and suggest suitable Java designs;
 - help implement task deletion, collection-based storage, command enums, and error handling;
+- organize the Java classes into responsibility-based packages and update their imports;
 - draft and review console UI tests, including invalid and edge-case inputs;
 - improve documentation and Git commit messages; and
 - run checks that compare the program's actual output with its expected output.

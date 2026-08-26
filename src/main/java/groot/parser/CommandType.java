@@ -1,3 +1,5 @@
+package groot.parser;
+
 /**
  * Represents a command that Groot can process.
  */

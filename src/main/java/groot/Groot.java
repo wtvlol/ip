@@ -1,4 +1,13 @@
+package groot;
+
 import java.util.Scanner;
+
+import groot.exception.GrootException;
+import groot.parser.CommandType;
+import groot.parser.Parser;
+import groot.storage.Storage;
+import groot.task.Task;
+import groot.task.TaskList;
 
 /**
  * Stores todos, deadlines, and events; manages their status; handles input errors;
