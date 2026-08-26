@@ -133,6 +133,7 @@ This project was developed with assistance from OpenAI Codex. AI was used to:
 - configure and verify Gradle fat-JAR packaging;
 - create and apply project-specific SE-EDU Java and Git standard skills;
 - draft and review JUnit and console UI tests, including invalid and edge-case inputs;
+- diagnose a JUnit functional-interface warning and add no-match coverage for task searching;
 - improve Javadoc, user-facing documentation, and Git commit messages; and
 - run checks that compare the program's actual output with its expected output.
 
