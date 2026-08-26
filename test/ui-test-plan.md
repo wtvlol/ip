@@ -41,14 +41,14 @@ ____________________________________________________________
 
 ## TC2: Manage todos, deadlines, and events
 
-**Aim:** Verify that all three task types are stored polymorphically, preserve date/time text, and display the correct status after marking and unmarking.
+**Aim:** Verify that all three task types are stored polymorphically, valid ISO deadline dates are reformatted for display, and task statuses can be marked and unmarked.
 
 ### Input
 
 ```text
 todo borrow book
-deadline return book /by Sunday
-deadline do homework /by no idea :-p
+deadline return book /by 2019-12-02
+deadline do homework /by 2020-02-29
 event project meeting /from Mon 2pm /to 4pm
 mark 1
 mark 2
@@ -91,12 +91,12 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Dec 02 2019)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] do homework (by: no idea :-p)
+   [D][ ] do homework (by: Feb 29 2020)
  Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -110,24 +110,24 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Nice! I've marked this task as done:
-   [D][X] return book (by: Sunday)
+   [D][X] return book (by: Dec 02 2019)
 ____________________________________________________________
 ____________________________________________________________
  Here are the tasks in your list:
  1.[T][X] borrow book
- 2.[D][X] return book (by: Sunday)
- 3.[D][ ] do homework (by: no idea :-p)
+ 2.[D][X] return book (by: Dec 02 2019)
+ 3.[D][ ] do homework (by: Feb 29 2020)
  4.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
  OK, I've marked this task as not done yet:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Dec 02 2019)
 ____________________________________________________________
 ____________________________________________________________
  Here are the tasks in your list:
  1.[T][X] borrow book
- 2.[D][ ] return book (by: Sunday)
- 3.[D][ ] do homework (by: no idea :-p)
+ 2.[D][ ] return book (by: Dec 02 2019)
+ 3.[D][ ] do homework (by: Feb 29 2020)
  4.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -137,12 +137,12 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Dec 02 2019)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
-   [D][ ] do homework (by: no idea :-p)
+   [D][ ] do homework (by: Feb 29 2020)
  Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -253,7 +253,7 @@ ____________________________________________________________
 
 ## TC4: Reject malformed deadlines and events
 
-**Aim:** Verify specific errors for missing or empty deadline and event fields, then confirm valid dated tasks can still be added and listed.
+**Aim:** Verify errors for missing deadline/event fields, non-ISO and impossible deadline dates, then confirm a valid date is parsed and reformatted.
 
 ### Input
 
@@ -261,11 +261,13 @@ ____________________________________________________________
 deadline return book
 deadline /by Sunday
 deadline return book /by
+deadline return book /by Sunday
+deadline return book /by 2019-02-29
 event meeting /from Mon
 event /from Mon /to Tue
 event meeting /from /to Tue
 event meeting /from Mon /to
-deadline return book /by Sunday
+deadline return book /by 2019-12-01
 event meeting /from Mon /to Tue
 list
 delete 1
@@ -302,7 +304,13 @@ ____________________________________________________________
  Oops! A deadline needs a description.
 ____________________________________________________________
 ____________________________________________________________
- Oops! A deadline needs a date or time after /by.
+ Oops! A deadline needs a date after /by.
+____________________________________________________________
+____________________________________________________________
+ Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.
+____________________________________________________________
+____________________________________________________________
+ Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.
 ____________________________________________________________
 ____________________________________________________________
  Oops! Use: event DESCRIPTION /from START /to END
@@ -318,7 +326,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Dec 01 2019)
  Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -328,12 +336,12 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Here are the tasks in your list:
- 1.[D][ ] return book (by: Sunday)
+ 1.[D][ ] return book (by: Dec 01 2019)
  2.[E][ ] meeting (from: Mon to: Tue)
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Dec 01 2019)
  Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -354,7 +362,7 @@ ____________________________________________________________
 
 ```text
 todo alpha
-deadline beta /by Fri
+deadline beta /by 2021-01-01
 event gamma /from 2pm /to 3pm
 mark 3
 delete 2
@@ -400,7 +408,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] beta (by: Fri)
+   [D][ ] beta (by: Jan 01 2021)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -414,7 +422,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
-   [D][ ] beta (by: Fri)
+   [D][ ] beta (by: Jan 01 2021)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -468,11 +476,12 @@ ____________________________________________________________
 
 ```text
 todo keep this
-deadline remove this /by Friday
+deadline submit report /by 2024-03-08
 event team meeting /from 2pm /to 3pm
+todo remove this
 todo symbols | and \ slash
 mark 1
-delete 2
+delete 4
 unmark 1
 mark 1
 bye
@@ -507,7 +516,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] remove this (by: Friday)
+   [D][ ] submit report (by: Mar 08 2024)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -517,8 +526,13 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [T][ ] symbols | and \ slash
+   [T][ ] remove this
  Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] symbols | and \ slash
+ Now you have 5 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  Nice! I've marked this task as done:
@@ -526,8 +540,8 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
-   [D][ ] remove this (by: Friday)
- Now you have 3 tasks in the list.
+   [T][ ] remove this
+ Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  OK, I've marked this task as not done yet:
@@ -550,6 +564,7 @@ ____________________________________________________________
 
 ```text
 list
+delete 1
 delete 1
 delete 1
 delete 1
@@ -581,12 +596,18 @@ ____________________________________________________________
 ____________________________________________________________
  Here are the tasks in your list:
  1.[T][X] keep this
- 2.[E][ ] team meeting (from: 2pm to: 3pm)
- 3.[T][ ] symbols | and \ slash
+ 2.[D][ ] submit report (by: Mar 08 2024)
+ 3.[E][ ] team meeting (from: 2pm to: 3pm)
+ 4.[T][ ] symbols | and \ slash
 ____________________________________________________________
 ____________________________________________________________
  Noted. I've removed this task:
    [T][X] keep this
+ Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][ ] submit report (by: Mar 08 2024)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________

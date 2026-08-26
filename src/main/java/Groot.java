@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -174,9 +176,14 @@ public class Groot {
                 throw new GrootException("Oops! A deadline needs a description.");
             }
             if (by.isEmpty()) {
-                throw new GrootException("Oops! A deadline needs a date or time after /by.");
+                throw new GrootException("Oops! A deadline needs a date after /by.");
             }
-            return new Deadline(description, by);
+            try {
+                return new Deadline(description, LocalDate.parse(by));
+            } catch (DateTimeParseException error) {
+                throw new GrootException(
+                        "Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.");
+            }
         }
 
         if (commandType == CommandType.EVENT) {
