@@ -39,6 +39,15 @@ public class Task {
     }
 
     /**
+     * Returns the task in the format used by the local data file.
+     *
+     * @return Pipe-separated task data.
+     */
+    public String toDataString() {
+        return (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
      * Returns the task in its display format, including its status icon.
      *
      * @return Formatted task text.

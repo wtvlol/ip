@@ -55,6 +55,10 @@ mark 2
 list
 unmark 2
 list
+delete 1
+delete 1
+delete 1
+delete 1
 bye
 ```
 
@@ -127,6 +131,26 @@ ____________________________________________________________
  4.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
+ Noted. I've removed this task:
+   [T][X] borrow book
+ Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][ ] return book (by: Sunday)
+ Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][ ] do homework (by: no idea :-p)
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [E][ ] project meeting (from: Mon 2pm to: 4pm)
+ Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
  Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
@@ -150,6 +174,7 @@ mark 1
 unmark
 unmark 1
 list
+delete 1
 bye
 ```
 
@@ -217,6 +242,11 @@ ____________________________________________________________
  1.[T][ ] read book
 ____________________________________________________________
 ____________________________________________________________
+ Noted. I've removed this task:
+   [T][ ] read book
+ Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
  Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
@@ -238,6 +268,8 @@ event meeting /from Mon /to
 deadline return book /by Sunday
 event meeting /from Mon /to Tue
 list
+delete 1
+delete 1
 bye
 ```
 
@@ -298,6 +330,16 @@ ____________________________________________________________
  Here are the tasks in your list:
  1.[D][ ] return book (by: Sunday)
  2.[E][ ] meeting (from: Mon to: Tue)
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][ ] return book (by: Sunday)
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [E][ ] meeting (from: Mon to: Tue)
+ Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  Bye. Hope to see you again soon!
@@ -412,6 +454,137 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Oops! Task 1 is not in the list.
+____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## TC6: Save every task-list change
+
+**Aim:** Verify that add, mark, unmark, and delete commands succeed in sequence and save a deterministic task list for TC7 to load after restart.
+
+### Input
+
+```text
+todo keep this
+deadline remove this /by Friday
+event team meeting /from 2pm /to 3pm
+mark 1
+delete 2
+unmark 1
+mark 1
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+       \  |  /
+     ___\_|_/___
+    /   /   \   \
+   /   | o o |    |
+  |    |  ^  |    |
+  |    \ \_/ /    |
+   \    '---'    /
+    \  |||||||  /
+     | ||||||| |
+  ___|_|||||||_|___
+ /     |||||||     \
+/      |||||||      \
+       |||||||
+      /||| |||\
+     /_||| |||_\
+Hello! I'm Groot.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] keep this
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [D][ ] remove this (by: Friday)
+ Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [E][ ] team meeting (from: 2pm to: 3pm)
+ Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Nice! I've marked this task as done:
+   [T][X] keep this
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][ ] remove this (by: Friday)
+ Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ OK, I've marked this task as not done yet:
+   [T][ ] keep this
+____________________________________________________________
+____________________________________________________________
+ Nice! I've marked this task as done:
+   [T][X] keep this
+____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## TC7: Load saved tasks after restart
+
+**Aim:** Verify that a fresh Groot process loads the task types, details, order, and completion states saved by TC6, then cleans up the shared test data.
+
+### Input
+
+```text
+list
+delete 1
+delete 1
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+       \  |  /
+     ___\_|_/___
+    /   /   \   \
+   /   | o o |    |
+  |    |  ^  |    |
+  |    \ \_/ /    |
+   \    '---'    /
+    \  |||||||  /
+     | ||||||| |
+  ___|_|||||||_|___
+ /     |||||||     \
+/      |||||||      \
+       |||||||
+      /||| |||\
+     /_||| |||_\
+Hello! I'm Groot.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][X] keep this
+ 2.[E][ ] team meeting (from: 2pm to: 3pm)
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [T][X] keep this
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [E][ ] team meeting (from: 2pm to: 3pm)
+ Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  Bye. Hope to see you again soon!

@@ -13,6 +13,16 @@ public class Todo extends Task {
     }
 
     /**
+     * Returns the todo in the format used by the local data file.
+     *
+     * @return Pipe-separated todo data.
+     */
+    @Override
+    public String toDataString() {
+        return "T | " + super.toDataString();
+    }
+
+    /**
      * Returns the todo in its display format.
      *
      * @return Formatted todo text.
