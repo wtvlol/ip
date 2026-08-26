@@ -53,6 +53,18 @@ public class TaskListTest {
     }
 
     /**
+     * Verifies that find returns no matches when no task description contains the keyword.
+     */
+    @Test
+    public void find_noMatchingDescription_returnsEmptyList() {
+        TaskList tasks = new TaskList(List.of(
+                new Todo("read book"),
+                new Deadline("submit report", LocalDate.of(2026, 8, 31))));
+
+        assertEquals(List.of(), tasks.find("groceries"));
+    }
+
+    /**
      * Verifies that find returns no matches for an empty task list.
      */
     @Test

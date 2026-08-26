@@ -29,7 +29,9 @@ public class ParserTest {
     @Test
     public void parseFindKeyword_keywordMissing_exceptionThrown() {
         GrootException error = assertThrows(
-                GrootException.class, () -> parser.parseFindKeyword("find"));
+                GrootException.class, () -> {
+                    parser.parseFindKeyword("find");
+                });
 
         assertEquals("Oops! Tell me what to find.", error.getMessage());
     }
