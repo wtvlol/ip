@@ -126,4 +126,19 @@ public class Parser {
         }
         return taskNumber - 1;
     }
+
+    /**
+     * Extracts the keyword from a find command.
+     *
+     * @param command Full command entered by the user.
+     * @return Non-empty keyword to match against task descriptions.
+     * @throws GrootException If no keyword follows the find command.
+     */
+    public String parseFindKeyword(String command) throws GrootException {
+        String keyword = command.substring(CommandType.FIND.getKeyword().length()).trim();
+        if (keyword.isEmpty()) {
+            throw new GrootException("Oops! Tell me what to find.");
+        }
+        return keyword;
+    }
 }

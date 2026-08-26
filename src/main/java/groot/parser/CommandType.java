@@ -6,6 +6,7 @@ package groot.parser;
 public enum CommandType {
     BYE("bye", false),
     LIST("list", false),
+    FIND("find", true),
     MARK("mark", true),
     UNMARK("unmark", true),
     DELETE("delete", true),

@@ -119,4 +119,16 @@ public class TaskList {
     public List<Task> asList() {
         return List.copyOf(tasks);
     }
+
+    /**
+     * Returns tasks whose descriptions contain the given keyword.
+     *
+     * @param keyword Keyword or phrase to search for.
+     * @return Matching tasks in their original list order.
+     */
+    public List<Task> find(String keyword) {
+        return tasks.stream()
+                .filter(task -> task.matches(keyword))
+                .toList();
+    }
 }

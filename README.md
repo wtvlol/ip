@@ -1,6 +1,6 @@
 # Groot chatbot
 
-Groot is a simple Java chatbot that saves todos, deadlines, and events between sessions. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by yyyy-MM-dd`, or `event DESCRIPTION /from START /to END` to add tasks. Deadline dates are validated and displayed as `MMM dd yyyy`. Enter `list` to display tasks, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, `delete TASK_NUMBER` to remove one, and `bye` to exit. Invalid commands and malformed task details produce an explanatory error without ending the program.
+Groot is a simple Java chatbot that saves todos, deadlines, and events between sessions. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by yyyy-MM-dd`, or `event DESCRIPTION /from START /to END` to add tasks. Deadline dates are validated and displayed as `MMM dd yyyy`. Enter `list` to display tasks, `find KEYWORD` to search task descriptions, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, `delete TASK_NUMBER` to remove one, and `bye` to exit. Invalid commands and malformed task details produce an explanatory error without ending the program.
 
 ## Setting up in Intellij
 
@@ -57,7 +57,13 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
     Here are the tasks in your list:
     1.[T][ ] borrow book
     2.[D][ ] return book (by: Dec 02 2019)
-    3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+   3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+   ____________________________________________________________
+   find book
+   ____________________________________________________________
+    Here are the matching tasks in your list:
+    1.[T][ ] borrow book
+    2.[D][ ] return book (by: Dec 02 2019)
    ____________________________________________________________
    mark 2
    ____________________________________________________________
@@ -122,7 +128,7 @@ Groot resolves its `data/groot.txt` path relative to the directory from which th
 This project was developed with assistance from OpenAI Codex. AI was used to:
 
 - review requirements and suggest suitable Java designs;
-- help implement task deletion, collection-based storage, command enums, and error handling;
+- help implement task deletion, task searching, collection-based storage, command enums, and error handling;
 - organize the Java classes into responsibility-based packages and update their imports;
 - configure and verify Gradle fat-JAR packaging;
 - draft and review JUnit and console UI tests, including invalid and edge-case inputs;

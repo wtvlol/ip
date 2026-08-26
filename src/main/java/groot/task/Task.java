@@ -1,5 +1,7 @@
 package groot.task;
 
+import java.util.Locale;
+
 /**
  * Represents a task and whether it has been completed.
  */
@@ -47,6 +49,17 @@ public class Task {
      */
     public boolean isDone() {
         return isDone;
+    }
+
+    /**
+     * Returns whether this task's description contains the given keyword.
+     * Matching is case-insensitive so users need not remember the original casing.
+     *
+     * @param keyword Keyword or phrase to search for.
+     * @return {@code true} if the description contains the keyword.
+     */
+    public boolean matches(String keyword) {
+        return description.toLowerCase(Locale.ROOT).contains(keyword.toLowerCase(Locale.ROOT));
     }
 
     /**
