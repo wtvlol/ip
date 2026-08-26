@@ -16,6 +16,16 @@ public class Deadline extends Task {
     }
 
     /**
+     * Returns the deadline in the format used by the local data file.
+     *
+     * @return Pipe-separated deadline data.
+     */
+    @Override
+    public String toDataString() {
+        return "D | " + super.toDataString() + " | " + escapeDataField(by);
+    }
+
+    /**
      * Returns the deadline in its display format.
      *
      * @return Formatted deadline text.

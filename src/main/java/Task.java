@@ -39,6 +39,34 @@ public class Task {
     }
 
     /**
+     * Returns whether this task has been completed.
+     *
+     * @return {@code true} if the task is done.
+     */
+    public boolean isDone() {
+        return isDone;
+    }
+
+    /**
+     * Escapes characters that have structural meaning in the data file.
+     *
+     * @param value Task text to store.
+     * @return Text safe for the pipe-separated storage format.
+     */
+    protected static String escapeDataField(String value) {
+        return value.replace("\\", "\\\\").replace("|", "\\|");
+    }
+
+    /**
+     * Returns the task in the format used by the local data file.
+     *
+     * @return Pipe-separated task data.
+     */
+    public String toDataString() {
+        return (isDone ? "1" : "0") + " | " + escapeDataField(description);
+    }
+
+    /**
      * Returns the task in its display format, including its status icon.
      *
      * @return Formatted task text.

@@ -19,6 +19,17 @@ public class Event extends Task {
     }
 
     /**
+     * Returns the event in the format used by the local data file.
+     *
+     * @return Pipe-separated event data.
+     */
+    @Override
+    public String toDataString() {
+        return "E | " + super.toDataString() + " | " + escapeDataField(from)
+                + " | " + escapeDataField(to);
+    }
+
+    /**
      * Returns the event in its display format.
      *
      * @return Formatted event text.

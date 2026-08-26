@@ -32,7 +32,14 @@ public class Groot {
         System.out.println("What can I do for you?");
         System.out.println(separator);
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks;
+        try {
+            tasks = Storage.loadTasks();
+        } catch (GrootException error) {
+            System.out.println(" " + error.getMessage());
+            System.out.println(separator);
+            return;
+        }
         Scanner scanner = new Scanner(System.in);
         inputLoop:
         while (scanner.hasNextLine()) {
@@ -58,19 +65,41 @@ public class Groot {
                     break;
                 case MARK:
                     int taskIndex = getTaskIndex(command, commandType, tasks.size());
-                    tasks.get(taskIndex).markAsDone();
+                    Task markedTask = tasks.get(taskIndex);
+                    boolean wasDone = markedTask.isDone();
+                    markedTask.markAsDone();
+                    try {
+                        Storage.saveTasks(tasks);
+                    } catch (GrootException error) {
+                        restoreTaskStatus(markedTask, wasDone);
+                        throw error;
+                    }
                     System.out.println(" Nice! I've marked this task as done:");
-                    System.out.println("   " + tasks.get(taskIndex));
+                    System.out.println("   " + markedTask);
                     break;
                 case UNMARK:
                     int unmarkedTaskIndex = getTaskIndex(command, commandType, tasks.size());
-                    tasks.get(unmarkedTaskIndex).markAsNotDone();
+                    Task unmarkedTask = tasks.get(unmarkedTaskIndex);
+                    boolean wasUnmarkedTaskDone = unmarkedTask.isDone();
+                    unmarkedTask.markAsNotDone();
+                    try {
+                        Storage.saveTasks(tasks);
+                    } catch (GrootException error) {
+                        restoreTaskStatus(unmarkedTask, wasUnmarkedTaskDone);
+                        throw error;
+                    }
                     System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("   " + tasks.get(unmarkedTaskIndex));
+                    System.out.println("   " + unmarkedTask);
                     break;
                 case DELETE:
                     int deletedTaskIndex = getTaskIndex(command, commandType, tasks.size());
                     Task removedTask = tasks.remove(deletedTaskIndex);
+                    try {
+                        Storage.saveTasks(tasks);
+                    } catch (GrootException error) {
+                        tasks.add(deletedTaskIndex, removedTask);
+                        throw error;
+                    }
                     System.out.println(" Noted. I've removed this task:");
                     System.out.println("   " + removedTask);
                     System.out.println(" Now you have " + tasks.size() + " task"
@@ -81,6 +110,12 @@ public class Groot {
                 case EVENT:
                     Task task = createTask(command, commandType);
                     tasks.add(task);
+                    try {
+                        Storage.saveTasks(tasks);
+                    } catch (GrootException error) {
+                        tasks.remove(tasks.size() - 1);
+                        throw error;
+                    }
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + task);
                     System.out.println(" Now you have " + tasks.size() + " task"
@@ -93,6 +128,20 @@ public class Groot {
                 System.out.println(" " + error.getMessage());
             }
             System.out.println(separator);
+        }
+    }
+
+    /**
+     * Restores a task's previous status after its updated list could not be saved.
+     *
+     * @param task Task whose status must be restored.
+     * @param wasDone Status held before the failed change.
+     */
+    private static void restoreTaskStatus(Task task, boolean wasDone) {
+        if (wasDone) {
+            task.markAsDone();
+        } else {
+            task.markAsNotDone();
         }
     }
 
