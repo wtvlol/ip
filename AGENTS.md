@@ -49,5 +49,5 @@ After every code change, review the affected classes and update their JUnit test
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
-When proposing or creating a commit message, include enough detail to explain the rationale for the change.
+Before proposing, preparing, reviewing, or creating any commit, invoke and follow the project-specific `$seedu-git-standard` skill at `.agents/skills/seedu-git-standard/SKILL.md`. Every commit must comply with that skill.
 Do not commit or push unless explicitly asked.
