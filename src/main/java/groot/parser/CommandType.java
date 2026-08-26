@@ -4,14 +4,23 @@ package groot.parser;
  * Represents a command that Groot can process.
  */
 public enum CommandType {
+    /** Ends the current Groot session. */
     BYE("bye", false),
+    /** Displays all tasks. */
     LIST("list", false),
+    /** Marks a selected task as completed. */
     MARK("mark", true),
+    /** Marks a selected task as incomplete. */
     UNMARK("unmark", true),
+    /** Removes a selected task. */
     DELETE("delete", true),
+    /** Adds a task without a date or time. */
     TODO("todo", true),
+    /** Adds a task with a completion date. */
     DEADLINE("deadline", true),
+    /** Adds a task with a start and end. */
     EVENT("event", true),
+    /** Represents input that does not match a supported command. */
     UNKNOWN("", false);
 
     private final String keyword;

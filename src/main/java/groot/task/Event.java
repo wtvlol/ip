@@ -4,7 +4,10 @@ package groot.task;
  * Represents a task that occurs between a given start and end date or time.
  */
 public class Event extends Task {
+    /** Start date or time supplied for the event. */
     protected String from;
+
+    /** End date or time supplied for the event. */
     protected String to;
 
     /**
