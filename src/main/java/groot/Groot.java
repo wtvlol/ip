@@ -82,6 +82,15 @@ public class Groot {
                             System.out.println(" " + (i + 1) + "." + tasks.get(i));
                         }
                         break;
+                    case FIND:
+                        String keyword = parser.parseFindKeyword(command);
+                        System.out.println(" Here are the matching tasks in your list:");
+                        int matchNumber = 1;
+                        for (Task matchingTask : tasks.find(keyword)) {
+                            System.out.println(" " + matchNumber + "." + matchingTask);
+                            matchNumber++;
+                        }
+                        break;
                     case MARK:
                         int taskIndex = parser.parseTaskIndex(command, commandType, tasks.size());
                         Task markedTask = tasks.get(taskIndex);

@@ -16,6 +16,7 @@ public class CommandTypeTest {
     public void from_exactKeyword_returnsMatchingCommandType() {
         assertEquals(CommandType.BYE, CommandType.from("bye"));
         assertEquals(CommandType.LIST, CommandType.from("list"));
+        assertEquals(CommandType.FIND, CommandType.from("find"));
         assertEquals(CommandType.MARK, CommandType.from("mark"));
         assertEquals(CommandType.UNMARK, CommandType.from("unmark"));
         assertEquals(CommandType.DELETE, CommandType.from("delete"));
@@ -32,6 +33,7 @@ public class CommandTypeTest {
         assertEquals(CommandType.MARK, CommandType.from("mark 1"));
         assertEquals(CommandType.UNMARK, CommandType.from("unmark 1"));
         assertEquals(CommandType.DELETE, CommandType.from("delete 1"));
+        assertEquals(CommandType.FIND, CommandType.from("find book"));
         assertEquals(CommandType.TODO, CommandType.from("todo read book"));
         assertEquals(CommandType.DEADLINE,
                 CommandType.from("deadline return book /by 2019-12-02"));
@@ -45,6 +47,7 @@ public class CommandTypeTest {
     @Test
     public void from_multipleSpacesBeforeArguments_returnsMatchingCommandType() {
         assertEquals(CommandType.MARK, CommandType.from("mark   1"));
+        assertEquals(CommandType.FIND, CommandType.from("find   book"));
         assertEquals(CommandType.TODO, CommandType.from("todo   read book"));
         assertEquals(CommandType.DEADLINE,
                 CommandType.from("deadline   return book /by 2019-12-02"));

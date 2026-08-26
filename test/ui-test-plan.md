@@ -624,3 +624,131 @@ ____________________________________________________________
  Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+## TC8: Find tasks by description
+
+**Aim:** Verify case-insensitive keyword and phrase searches, ordered result numbering, no-match output, missing-keyword handling, and that searches do not change the task list.
+
+### Input
+
+```text
+todo read book
+deadline return book /by 2019-12-02
+event project team meeting /from 2pm /to 3pm
+todo buy groceries
+mark 1
+mark 2
+find book
+find BOOK
+find team meeting
+find library
+find
+list
+delete 1
+delete 1
+delete 1
+delete 1
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+       \  |  /
+     ___\_|_/___
+    /   /   \   \
+   /   | o o |    |
+  |    |  ^  |    |
+  |    \ \_/ /    |
+   \    '---'    /
+    \  |||||||  /
+     | ||||||| |
+  ___|_|||||||_|___
+ /     |||||||     \
+/      |||||||      \
+       |||||||
+      /||| |||\
+     /_||| |||_\
+Hello! I'm Groot.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] read book
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [D][ ] return book (by: Dec 02 2019)
+ Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [E][ ] project team meeting (from: 2pm to: 3pm)
+ Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] buy groceries
+ Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Nice! I've marked this task as done:
+   [T][X] read book
+____________________________________________________________
+____________________________________________________________
+ Nice! I've marked this task as done:
+   [D][X] return book (by: Dec 02 2019)
+____________________________________________________________
+____________________________________________________________
+ Here are the matching tasks in your list:
+ 1.[T][X] read book
+ 2.[D][X] return book (by: Dec 02 2019)
+____________________________________________________________
+____________________________________________________________
+ Here are the matching tasks in your list:
+ 1.[T][X] read book
+ 2.[D][X] return book (by: Dec 02 2019)
+____________________________________________________________
+____________________________________________________________
+ Here are the matching tasks in your list:
+ 1.[E][ ] project team meeting (from: 2pm to: 3pm)
+____________________________________________________________
+____________________________________________________________
+ Here are the matching tasks in your list:
+____________________________________________________________
+____________________________________________________________
+ Oops! Tell me what to find.
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][X] read book
+ 2.[D][X] return book (by: Dec 02 2019)
+ 3.[E][ ] project team meeting (from: 2pm to: 3pm)
+ 4.[T][ ] buy groceries
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [T][X] read book
+ Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][X] return book (by: Dec 02 2019)
+ Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [E][ ] project team meeting (from: 2pm to: 3pm)
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [T][ ] buy groceries
+ Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon!
+____________________________________________________________
+```
