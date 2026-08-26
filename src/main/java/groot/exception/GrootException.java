@@ -1,3 +1,5 @@
+package groot.exception;
+
 /**
  * Represents an input error that Groot can explain to the user.
  */
