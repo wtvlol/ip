@@ -26,6 +26,12 @@ public class Storage {
     private static final Path DATA_FILE = DATA_DIRECTORY.resolve("groot.txt");
 
     /**
+     * Creates a storage helper that uses Groot's configured data file.
+     */
+    public Storage() {
+    }
+
+    /**
      * Replaces the data file with one line for each task in the current list.
      *
      * @param tasks Tasks to save.

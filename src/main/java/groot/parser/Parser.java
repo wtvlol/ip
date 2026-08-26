@@ -15,6 +15,12 @@ import groot.task.Todo;
 public class Parser {
 
     /**
+     * Creates a parser for Groot commands.
+     */
+    public Parser() {
+    }
+
+    /**
      * Identifies and validates the command represented by the user's input.
      *
      * @param command Trimmed command entered by the user.

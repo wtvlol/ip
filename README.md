@@ -126,7 +126,7 @@ This project was developed with assistance from OpenAI Codex. AI was used to:
 - organize the Java classes into responsibility-based packages and update their imports;
 - configure and verify Gradle fat-JAR packaging;
 - draft and review JUnit and console UI tests, including invalid and edge-case inputs;
-- improve documentation and Git commit messages; and
+- improve Javadoc, user-facing documentation, and Git commit messages; and
 - run checks that compare the program's actual output with its expected output.
 
 All AI-generated suggestions were reviewed before use. The source code was inspected, and the recorded UI test plan was run with Java 25 to verify the resulting behavior. The project author remains responsible for the final implementation.

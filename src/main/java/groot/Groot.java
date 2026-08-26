@@ -14,6 +14,18 @@ import groot.task.TaskList;
  * and exits on {@code bye}.
  */
 public class Groot {
+
+    /**
+     * Creates a Groot application instance.
+     */
+    public Groot() {
+    }
+
+    /**
+     * Starts Groot, loads saved tasks, and processes commands until the user exits.
+     *
+     * @param args Command-line arguments; currently unused.
+     */
     public static void main(String[] args) {
         String separator = "_".repeat(60);
         String banner = """
