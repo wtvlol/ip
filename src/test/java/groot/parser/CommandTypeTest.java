@@ -27,6 +27,15 @@ public class CommandTypeTest {
     }
 
     /**
+     * Verifies that common CLI help aliases map to the help command.
+     */
+    @Test
+    public void from_helpAlias_returnsHelpCommandType() {
+        assertEquals(CommandType.HELP, CommandType.from("--help"));
+        assertEquals(CommandType.HELP, CommandType.from("-h"));
+    }
+
+    /**
      * Verifies that commands designed to accept arguments are recognized with arguments present.
      */
     @Test
@@ -62,6 +71,8 @@ public class CommandTypeTest {
         assertEquals(CommandType.UNKNOWN, CommandType.from("bye now"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("list extra"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("help extra"));
+        assertEquals(CommandType.UNKNOWN, CommandType.from("--help extra"));
+        assertEquals(CommandType.UNKNOWN, CommandType.from("-h extra"));
     }
 
     /**

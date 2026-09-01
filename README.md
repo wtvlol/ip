@@ -1,6 +1,21 @@
 # Groot chatbot
 
-Groot is a simple Java chatbot that saves todos, deadlines, and events between sessions. Use `todo DESCRIPTION`, `deadline DESCRIPTION /by yyyy-MM-dd`, or `event DESCRIPTION /from START /to END` to add tasks. Deadline dates are validated and displayed as `MMM dd yyyy`. Enter `list` to display tasks, `find KEYWORD` to search task descriptions, `mark TASK_NUMBER` or `unmark TASK_NUMBER` to update their status, `delete TASK_NUMBER` to remove one, and `bye` to exit. Invalid commands and malformed task details produce an explanatory error without ending the program.
+Groot is a simple Java chatbot that saves todos, deadlines, and events between sessions. Deadline dates are validated and displayed as `MMM dd yyyy`. Enter `help`, `--help`, or `-h` to see the available commands. Invalid commands and malformed task details produce an explanatory error without ending the program.
+
+## Command reference
+
+| Command | Description |
+| --- | --- |
+| `todo DESCRIPTION` | Adds a todo task. |
+| `deadline DESCRIPTION /by YYYY-MM-DD` | Adds a deadline task. |
+| `event DESCRIPTION /from START /to END` | Adds an event task. |
+| `list` | Displays all tasks. |
+| `find KEYWORD` | Finds tasks whose descriptions contain the keyword. |
+| `mark TASK_NUMBER` | Marks a task as done. |
+| `unmark TASK_NUMBER` | Marks a task as not done. |
+| `delete TASK_NUMBER` | Deletes a task. |
+| `help`, `--help`, or `-h` | Displays the command reference in Groot. |
+| `bye` | Exits Groot. |
 
 ## Setting up in Intellij
 
@@ -97,9 +112,12 @@ The Java source root remains `src/main/java`. Classes are grouped by responsibil
 - `groot.exception`: application-specific exceptions;
 - `groot.parser`: command recognition and input parsing;
 - `groot.storage`: loading and saving tasks; and
-- `groot.task`: task models and task-list operations.
+- `groot.task`: task models and task-list operations; and
+- `groot.ui`: JavaFX windows and dialog components.
 
 Keep `src/main/java` as the Java source root. Package folders must remain inside that directory so Java and project tools can find them correctly.
+
+`CommandType` accepts a canonical command keyword followed by optional aliases through a varargs parameter. This keeps `help`, `--help`, and `-h` mapped to the same command type. `TaskList` retains its collection-based constructor for tasks loaded from storage and also provides a varargs constructor for callers that supply tasks directly.
 
 ## Building and running the fat JAR
 

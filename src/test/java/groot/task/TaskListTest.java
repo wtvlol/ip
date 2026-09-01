@@ -20,7 +20,7 @@ public class TaskListTest {
         Task firstMatch = new Todo("Read Book");
         Task nonMatch = new Todo("buy groceries");
         Task secondMatch = new Deadline("return book", LocalDate.of(2026, 8, 31));
-        TaskList tasks = new TaskList(List.of(firstMatch, nonMatch, secondMatch));
+        TaskList tasks = new TaskList(firstMatch, nonMatch, secondMatch);
 
         assertEquals(List.of(firstMatch, secondMatch), tasks.find("BOOK"));
     }
@@ -31,10 +31,10 @@ public class TaskListTest {
     @Test
     public void find_phraseKeyword_returnsMatchingTask() {
         Task matchingTask = new Event("project team meeting", "2pm", "3pm");
-        TaskList tasks = new TaskList(List.of(
+        TaskList tasks = new TaskList(
                 matchingTask,
                 new Todo("project report"),
-                new Todo("team lunch")));
+                new Todo("team lunch"));
 
         assertEquals(List.of(matchingTask), tasks.find("team meeting"));
     }
@@ -44,9 +44,9 @@ public class TaskListTest {
      */
     @Test
     public void find_keywordOnlyInMetadata_returnsEmptyList() {
-        TaskList tasks = new TaskList(List.of(
+        TaskList tasks = new TaskList(
                 new Deadline("submit report", LocalDate.of(2026, 8, 31)),
-                new Event("project meeting", "Monday", "Tuesday")));
+                new Event("project meeting", "Monday", "Tuesday"));
 
         assertEquals(List.of(), tasks.find("2026"));
         assertEquals(List.of(), tasks.find("Monday"));
@@ -57,9 +57,9 @@ public class TaskListTest {
      */
     @Test
     public void find_noMatchingDescription_returnsEmptyList() {
-        TaskList tasks = new TaskList(List.of(
+        TaskList tasks = new TaskList(
                 new Todo("read book"),
-                new Deadline("submit report", LocalDate.of(2026, 8, 31))));
+                new Deadline("submit report", LocalDate.of(2026, 8, 31)));
 
         assertEquals(List.of(), tasks.find("groceries"));
     }
