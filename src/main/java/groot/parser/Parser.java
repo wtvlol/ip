@@ -86,18 +86,18 @@ public class Parser {
                 throw new GrootException("Oops! Use: event DESCRIPTION /from START /to END");
             }
             String description = arguments.substring(0, fromIndex).trim();
-            String from = arguments.substring(fromIndex + 5, toIndex).trim();
-            String to = arguments.substring(toIndex + 3).trim();
+            String start = arguments.substring(fromIndex + 5, toIndex).trim();
+            String end = arguments.substring(toIndex + 3).trim();
             if (description.isEmpty()) {
                 throw new GrootException("Oops! An event needs a description.");
             }
-            if (from.isEmpty()) {
+            if (start.isEmpty()) {
                 throw new GrootException("Oops! An event needs a start date or time after /from.");
             }
-            if (to.isEmpty()) {
+            if (end.isEmpty()) {
                 throw new GrootException("Oops! An event needs an end date or time after /to.");
             }
-            return new Event(description, from, to);
+            return new Event(description, start, end);
         }
 
         throw new IllegalArgumentException("Command type does not create a task: " + commandType);

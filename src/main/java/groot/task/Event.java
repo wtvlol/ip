@@ -5,22 +5,22 @@ package groot.task;
  */
 public class Event extends Task {
     /** Start date or time supplied for the event. */
-    protected String from;
+    protected String start;
 
     /** End date or time supplied for the event. */
-    protected String to;
+    protected String end;
 
     /**
      * Creates an incomplete event task.
      *
      * @param description Description of the event.
-     * @param from Start date or time of the event.
-     * @param to End date or time of the event.
+     * @param start Start date or time of the event.
+     * @param end End date or time of the event.
      */
-    public Event(String description, String from, String to) {
+    public Event(String description, String start, String end) {
         super(description);
-        this.from = from;
-        this.to = to;
+        this.start = start;
+        this.end = end;
     }
 
     /**
@@ -30,8 +30,8 @@ public class Event extends Task {
      */
     @Override
     public String toDataString() {
-        return "E | " + super.toDataString() + " | " + escapeDataField(from)
-                + " | " + escapeDataField(to);
+        return "E | " + super.toDataString() + " | " + escapeDataField(start)
+                + " | " + escapeDataField(end);
     }
 
     /**
@@ -41,6 +41,6 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return "[E]" + super.toString() + " (from: " + start + " to: " + end + ")";
     }
 }

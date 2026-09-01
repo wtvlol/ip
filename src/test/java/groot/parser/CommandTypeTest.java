@@ -23,6 +23,7 @@ public class CommandTypeTest {
         assertEquals(CommandType.TODO, CommandType.from("todo"));
         assertEquals(CommandType.DEADLINE, CommandType.from("deadline"));
         assertEquals(CommandType.EVENT, CommandType.from("event"));
+        assertEquals(CommandType.HELP, CommandType.from("help"));
     }
 
     /**
@@ -60,6 +61,7 @@ public class CommandTypeTest {
     public void from_argumentlessCommandWithArguments_returnsUnknown() {
         assertEquals(CommandType.UNKNOWN, CommandType.from("bye now"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("list extra"));
+        assertEquals(CommandType.UNKNOWN, CommandType.from("help extra"));
     }
 
     /**

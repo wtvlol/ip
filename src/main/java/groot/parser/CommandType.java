@@ -22,6 +22,8 @@ public enum CommandType {
     DEADLINE("deadline", true),
     /** Adds a task with a start and end. */
     EVENT("event", true),
+    /** Displays the available commands and their syntax. */
+    HELP("help", false),
     /** Represents input that does not match a supported command. */
     UNKNOWN("", false);
 

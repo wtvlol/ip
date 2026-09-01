@@ -14,6 +14,20 @@ import groot.task.TaskList;
  * and exits on {@code bye}.
  */
 public class Groot {
+    /** Summary of every command supported by Groot. */
+    private static final String HELP_MESSAGE = String.join("\n",
+            " Here are the commands you can use:",
+            "   todo DESCRIPTION - Add a todo task.",
+            "   deadline DESCRIPTION /by YYYY-MM-DD - Add a deadline task.",
+            "   event DESCRIPTION /from START /to END - Add an event task.",
+            "   list - Show all tasks.",
+            "   find KEYWORD - Find tasks by description.",
+            "   mark NUMBER - Mark a task as done.",
+            "   unmark NUMBER - Mark a task as not done.",
+            "   delete NUMBER - Delete a task.",
+            "   help - Show this help message.",
+            "   bye - Exit Groot.");
+
     private final Parser parser;
     private final TaskList tasks;
 
@@ -163,6 +177,8 @@ public class Groot {
                 }
                 return " Got it. I've added this task:\n   " + task + "\n Now you have "
                         + getTaskCountDescription() + ".";
+            case HELP:
+                return HELP_MESSAGE;
             default:
                 throw new IllegalStateException("Parser returned an unknown command");
         }

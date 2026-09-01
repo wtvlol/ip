@@ -752,3 +752,75 @@ ____________________________________________________________
  Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+## TC9: Display command help
+
+**Aim:** Verify that help lists every supported command, rejects trailing arguments, and does not change task state.
+
+### Input
+
+```text
+todo keep state
+help extra
+help
+list
+delete 1
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+       \  |  /
+     ___\_|_/___
+    /   /   \   \
+   /   | o o |    |
+  |    |  ^  |    |
+  |    \ \_/ /    |
+   \    '---'    /
+    \  |||||||  /
+     | ||||||| |
+  ___|_|||||||_|___
+ /     |||||||     \
+/      |||||||      \
+       |||||||
+      /||| |||\
+     /_||| |||_\
+Hello! I'm Groot.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] keep state
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Oops! I don't recognise that command.
+____________________________________________________________
+____________________________________________________________
+ Here are the commands you can use:
+   todo DESCRIPTION - Add a todo task.
+   deadline DESCRIPTION /by YYYY-MM-DD - Add a deadline task.
+   event DESCRIPTION /from START /to END - Add an event task.
+   list - Show all tasks.
+   find KEYWORD - Find tasks by description.
+   mark NUMBER - Mark a task as done.
+   unmark NUMBER - Mark a task as not done.
+   delete NUMBER - Delete a task.
+   help - Show this help message.
+   bye - Exit Groot.
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][ ] keep state
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [T][ ] keep state
+ Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon!
+____________________________________________________________
+```
