@@ -153,7 +153,7 @@ public class Groot {
                         System.out.println(" Now you have " + tasks.size() + " task"
                                 + (tasks.size() == 1 ? "" : "s") + " in the list.");
                         break;
-                    case UNKNOWN:
+                    default:
                         throw new IllegalStateException("Parser returned an unknown command");
                 }
             } catch (GrootException error) {
