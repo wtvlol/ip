@@ -1,44 +1,46 @@
 package groot.parser;
 
+import java.util.List;
+
 /**
  * Represents a command that Groot can process.
  */
 public enum CommandType {
     /** Ends the current Groot session. */
-    BYE("bye", false),
+    BYE(false, "bye"),
     /** Displays all tasks. */
-    LIST("list", false),
+    LIST(false, "list"),
     /** Displays tasks whose descriptions contain a keyword. */
-    FIND("find", true),
+    FIND(true, "find"),
     /** Marks a selected task as completed. */
-    MARK("mark", true),
+    MARK(true, "mark"),
     /** Marks a selected task as incomplete. */
-    UNMARK("unmark", true),
+    UNMARK(true, "unmark"),
     /** Removes a selected task. */
-    DELETE("delete", true),
+    DELETE(true, "delete"),
     /** Adds a task without a date or time. */
-    TODO("todo", true),
+    TODO(true, "todo"),
     /** Adds a task with a completion date. */
-    DEADLINE("deadline", true),
+    DEADLINE(true, "deadline"),
     /** Adds a task with a start and end. */
-    EVENT("event", true),
+    EVENT(true, "event"),
     /** Displays the available commands and their syntax. */
-    HELP("help", false),
+    HELP(false, "help", "--help", "-h"),
     /** Represents input that does not match a supported command. */
-    UNKNOWN("", false);
+    UNKNOWN(false, "");
 
-    private final String keyword;
     private final boolean acceptsArguments;
+    private final List<String> keywords;
 
     /**
-     * Creates a command type with its user-facing keyword.
+     * Creates a command type with a canonical keyword and optional aliases.
      *
-     * @param keyword Word used to invoke the command.
      * @param acceptsArguments Whether text may follow the command keyword.
+     * @param keywords Canonical keyword followed by any aliases.
      */
-    CommandType(String keyword, boolean acceptsArguments) {
-        this.keyword = keyword;
+    CommandType(boolean acceptsArguments, String... keywords) {
         this.acceptsArguments = acceptsArguments;
+        this.keywords = List.of(keywords);
     }
 
     /**
@@ -47,7 +49,7 @@ public enum CommandType {
      * @return Command keyword.
      */
     public String getKeyword() {
-        return keyword;
+        return keywords.get(0);
     }
 
     /**
@@ -58,12 +60,24 @@ public enum CommandType {
      */
     public static CommandType from(String command) {
         for (CommandType type : values()) {
-            boolean hasAcceptedArguments = type.acceptsArguments
-                    && command.startsWith(type.keyword + " ");
-            if (command.equals(type.keyword) || hasAcceptedArguments) {
+            if (type.matches(command)) {
                 return type;
             }
         }
         return UNKNOWN;
+    }
+
+    /**
+     * Returns whether the command uses this type's canonical keyword or an alias.
+     */
+    private boolean matches(String command) {
+        for (String keyword : keywords) {
+            boolean hasAcceptedArguments = acceptsArguments
+                    && command.startsWith(keyword + " ");
+            if (command.equals(keyword) || hasAcceptedArguments) {
+                return true;
+            }
+        }
+        return false;
     }
 }

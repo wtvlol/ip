@@ -762,7 +762,7 @@ ____________________________________________________________
 ```text
 todo keep state
 help extra
-help
+--help
 list
 delete 1
 bye
@@ -808,7 +808,7 @@ ____________________________________________________________
    mark NUMBER - Mark a task as done.
    unmark NUMBER - Mark a task as not done.
    delete NUMBER - Delete a task.
-   help - Show this help message.
+   help, --help, -h - Show this help message.
    bye - Exit Groot.
 ____________________________________________________________
 ____________________________________________________________
