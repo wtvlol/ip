@@ -82,6 +82,8 @@ public class TaskList {
     public Task markAsDone(int index) {
         Task task = tasks.get(index);
         task.markAsDone();
+        // Every task subtype must honor the completion operation before success is reported.
+        assert task.isDone() : "Marking a task must leave it completed";
         return task;
     }
 
@@ -94,6 +96,8 @@ public class TaskList {
     public Task markAsNotDone(int index) {
         Task task = tasks.get(index);
         task.markAsNotDone();
+        // Every task subtype must honor the inverse operation before success is reported.
+        assert !task.isDone() : "Unmarking a task must leave it incomplete";
         return task;
     }
 
@@ -109,6 +113,8 @@ public class TaskList {
         } else {
             tasks.get(index).markAsNotDone();
         }
+        // Failed saves rely on this operation to restore the exact previous completion state.
+        assert tasks.get(index).isDone() == isDone : "Restored status must match the requested status";
     }
 
     /**

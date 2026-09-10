@@ -114,6 +114,8 @@ public class Parser {
      */
     public int parseTaskIndex(String command, CommandType commandType, int taskCount)
             throws GrootException {
+        // The caller supplies a collection size, which can never be negative even for an empty list.
+        assert taskCount >= 0 : "Task count must not be negative";
         String action = commandType.getKeyword();
         String numberText = command.substring(action.length()).trim();
         if (numberText.isEmpty()) {
