@@ -13,6 +13,9 @@ import groot.task.Todo;
  * Interprets user input and converts command arguments into application objects.
  */
 public class Parser {
+    private static final String DEADLINE_MARKER = "/by";
+    private static final String EVENT_START_MARKER = "/from";
+    private static final String EVENT_END_MARKER = "/to";
 
     /**
      * Creates a parser for Groot commands.
@@ -48,59 +51,74 @@ public class Parser {
      * @throws GrootException If required task details are missing or invalid.
      */
     public Task createTask(String command, CommandType commandType) throws GrootException {
-        if (commandType == CommandType.TODO) {
-            String description = command.substring(commandType.getKeyword().length()).trim();
-            if (description.isEmpty()) {
-                throw new GrootException("Oops! A todo needs a description.");
-            }
-            return new Todo(description);
-        }
+        return switch (commandType) {
+            case TODO -> parseTodo(command);
+            case DEADLINE -> parseDeadline(command);
+            case EVENT -> parseEvent(command);
+            default -> throw new IllegalArgumentException("Command type does not create a task: " + commandType);
+        };
+    }
 
-        if (commandType == CommandType.DEADLINE) {
-            String arguments = command.substring(commandType.getKeyword().length()).trim();
-            int byIndex = arguments.indexOf("/by");
-            if (byIndex < 0) {
-                throw new GrootException("Oops! Use: deadline DESCRIPTION /by DATE");
-            }
-            String description = arguments.substring(0, byIndex).trim();
-            String by = arguments.substring(byIndex + 3).trim();
-            if (description.isEmpty()) {
-                throw new GrootException("Oops! A deadline needs a description.");
-            }
-            if (by.isEmpty()) {
-                throw new GrootException("Oops! A deadline needs a date after /by.");
-            }
-            try {
-                return new Deadline(description, LocalDate.parse(by));
-            } catch (DateTimeParseException error) {
-                throw new GrootException(
-                        "Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.");
-            }
+    /**
+     * Parses a todo command, requiring a non-empty description.
+     */
+    private Todo parseTodo(String command) throws GrootException {
+        String description = command.substring(CommandType.TODO.getKeyword().length()).trim();
+        if (description.isEmpty()) {
+            throw new GrootException("Oops! A todo needs a description.");
         }
+        return new Todo(description);
+    }
 
-        if (commandType == CommandType.EVENT) {
-            String arguments = command.substring(commandType.getKeyword().length()).trim();
-            int fromIndex = arguments.indexOf("/from");
-            int toIndex = fromIndex < 0 ? -1 : arguments.indexOf("/to", fromIndex + 5);
-            if (fromIndex < 0 || toIndex < 0) {
-                throw new GrootException("Oops! Use: event DESCRIPTION /from START /to END");
-            }
-            String description = arguments.substring(0, fromIndex).trim();
-            String start = arguments.substring(fromIndex + 5, toIndex).trim();
-            String end = arguments.substring(toIndex + 3).trim();
-            if (description.isEmpty()) {
-                throw new GrootException("Oops! An event needs a description.");
-            }
-            if (start.isEmpty()) {
-                throw new GrootException("Oops! An event needs a start date or time after /from.");
-            }
-            if (end.isEmpty()) {
-                throw new GrootException("Oops! An event needs an end date or time after /to.");
-            }
-            return new Event(description, start, end);
+    /**
+     * Parses a deadline command, requiring a description and a valid ISO date.
+     */
+    private Deadline parseDeadline(String command) throws GrootException {
+        String arguments = command.substring(CommandType.DEADLINE.getKeyword().length()).trim();
+        int byIndex = arguments.indexOf(DEADLINE_MARKER);
+        if (byIndex < 0) {
+            throw new GrootException("Oops! Use: deadline DESCRIPTION /by DATE");
         }
+        String description = arguments.substring(0, byIndex).trim();
+        String dueDateText = arguments.substring(byIndex + DEADLINE_MARKER.length()).trim();
+        if (description.isEmpty()) {
+            throw new GrootException("Oops! A deadline needs a description.");
+        }
+        if (dueDateText.isEmpty()) {
+            throw new GrootException("Oops! A deadline needs a date after /by.");
+        }
+        try {
+            return new Deadline(description, LocalDate.parse(dueDateText));
+        } catch (DateTimeParseException error) {
+            throw new GrootException(
+                    "Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.");
+        }
+    }
 
-        throw new IllegalArgumentException("Command type does not create a task: " + commandType);
+    /**
+     * Parses an event command, requiring both time markers and non-empty fields.
+     */
+    private Event parseEvent(String command) throws GrootException {
+        String arguments = command.substring(CommandType.EVENT.getKeyword().length()).trim();
+        int fromIndex = arguments.indexOf(EVENT_START_MARKER);
+        int toIndex = fromIndex < 0 ? -1 : arguments.indexOf(EVENT_END_MARKER,
+                fromIndex + EVENT_START_MARKER.length());
+        if (fromIndex < 0 || toIndex < 0) {
+            throw new GrootException("Oops! Use: event DESCRIPTION /from START /to END");
+        }
+        String description = arguments.substring(0, fromIndex).trim();
+        String start = arguments.substring(fromIndex + EVENT_START_MARKER.length(), toIndex).trim();
+        String end = arguments.substring(toIndex + EVENT_END_MARKER.length()).trim();
+        if (description.isEmpty()) {
+            throw new GrootException("Oops! An event needs a description.");
+        }
+        if (start.isEmpty()) {
+            throw new GrootException("Oops! An event needs a start date or time after /from.");
+        }
+        if (end.isEmpty()) {
+            throw new GrootException("Oops! An event needs an end date or time after /to.");
+        }
+        return new Event(description, start, end);
     }
 
     /**
