@@ -157,7 +157,7 @@ ____________________________________________________________
 
 ## TC3: Reject invalid commands without corrupting tasks
 
-**Aim:** Verify unknown commands, invalid arguments, and argumentless command boundaries while ensuring rejected commands do not change stored tasks or end the session.
+**Aim:** Verify unknown commands and invalid arguments interleaved with valid mark/unmark commands. Confirm that rejected indices preserve task state and repeated status commands remain safe.
 
 ### Input
 
@@ -171,7 +171,11 @@ mark
 mark two
 mark 2
 mark 1
+mark 0
+mark 1
+list
 unmark
+unmark 1
 unmark 1
 list
 delete 1
@@ -231,7 +235,22 @@ ____________________________________________________________
    [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
+ Oops! Task 0 is not in the list.
+____________________________________________________________
+____________________________________________________________
+ Nice! I've marked this task as done:
+   [T][X] read book
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][X] read book
+____________________________________________________________
+____________________________________________________________
  Oops! Tell me which task to unmark.
+____________________________________________________________
+____________________________________________________________
+ OK, I've marked this task as not done yet:
+   [T][ ] read book
 ____________________________________________________________
 ____________________________________________________________
  OK, I've marked this task as not done yet:
