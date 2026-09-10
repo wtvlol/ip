@@ -2,6 +2,10 @@
 
 Each test case starts a fresh instance of `Groot`. Begin the suite without a `data` directory so TC1 covers first-run startup and later task commands cover automatic directory creation. Expected-output blocks contain program stdout only; console input is recorded separately.
 
+Run the recorded suite with Java assertions enabled (`JDK_JAVA_OPTIONS=-ea`).
+TC2 and TC6 exercise status postconditions; TC3 verifies that invalid user input still produces normal errors
+and preserves task state. JUnit separately checks impossible internal states and faulty task subclasses.
+
 ## TC1: Exit using bye
 
 **Aim:** Verify that Groot starts normally without an existing data folder or file and exits with the farewell message when the user enters `bye`.
@@ -157,7 +161,7 @@ ____________________________________________________________
 
 ## TC3: Reject invalid commands without corrupting tasks
 
-**Aim:** Verify unknown commands and invalid arguments interleaved with valid mark/unmark commands. Confirm that rejected indices preserve task state and repeated status commands remain safe.
+**Aim:** Verify unknown commands and invalid arguments interleaved with valid mark/unmark commands with assertions enabled. Confirm that rejected indices preserve task state and repeated status commands remain safe.
 
 ### Input
 
