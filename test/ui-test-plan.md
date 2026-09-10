@@ -2,6 +2,10 @@
 
 Each test case starts a fresh instance of `Groot`. Begin the suite without a `data` directory so TC1 covers first-run startup and later task commands cover automatic directory creation. Expected-output blocks contain program stdout only; console input is recorded separately.
 
+Run the recorded suite with Java assertions enabled (`JDK_JAVA_OPTIONS=-ea`).
+TC2 and TC6 exercise status postconditions; TC3 verifies that invalid user input still produces normal errors
+and preserves task state. JUnit separately checks impossible internal states and faulty task subclasses.
+
 ## TC1: Exit using bye
 
 **Aim:** Verify that Groot starts normally without an existing data folder or file and exits with the farewell message when the user enters `bye`.
@@ -157,7 +161,7 @@ ____________________________________________________________
 
 ## TC3: Reject invalid commands without corrupting tasks
 
-**Aim:** Verify unknown commands, invalid arguments, and argumentless command boundaries while ensuring rejected commands do not change stored tasks or end the session.
+**Aim:** Verify unknown commands and invalid arguments interleaved with valid mark/unmark commands with assertions enabled. Confirm that rejected indices preserve task state and repeated status commands remain safe.
 
 ### Input
 
@@ -171,7 +175,11 @@ mark
 mark two
 mark 2
 mark 1
+mark 0
+mark 1
+list
 unmark
+unmark 1
 unmark 1
 list
 delete 1
@@ -231,7 +239,22 @@ ____________________________________________________________
    [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
+ Oops! Task 0 is not in the list.
+____________________________________________________________
+____________________________________________________________
+ Nice! I've marked this task as done:
+   [T][X] read book
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][X] read book
+____________________________________________________________
+____________________________________________________________
  Oops! Tell me which task to unmark.
+____________________________________________________________
+____________________________________________________________
+ OK, I've marked this task as not done yet:
+   [T][ ] read book
 ____________________________________________________________
 ____________________________________________________________
  OK, I've marked this task as not done yet:
@@ -253,7 +276,7 @@ ____________________________________________________________
 
 ## TC4: Reject malformed deadlines and events
 
-**Aim:** Verify errors for missing deadline/event fields, non-ISO and impossible deadline dates, then confirm a valid date is parsed and reformatted.
+**Aim:** Verify errors for missing deadline/event fields, non-ISO and impossible dates, and reversed event markers. Interleave invalid commands with valid tasks and confirm rejected inputs preserve the list.
 
 ### Input
 
@@ -268,7 +291,9 @@ event /from Mon /to Tue
 event meeting /from /to Tue
 event meeting /from Mon /to
 deadline return book /by 2019-12-01
+event meeting /to Tue /from Mon
 event meeting /from Mon /to Tue
+deadline report /by 2023-02-29
 list
 delete 1
 delete 1
@@ -330,9 +355,15 @@ ____________________________________________________________
  Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
+ Oops! Use: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
  Got it. I've added this task:
    [E][ ] meeting (from: Mon to: Tue)
  Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.
 ____________________________________________________________
 ____________________________________________________________
  Here are the tasks in your list:
