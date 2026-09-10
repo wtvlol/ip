@@ -141,6 +141,21 @@ java -jar build/libs/groot.jar
 
 Groot resolves its `data/groot.txt` path relative to the directory from which the JAR is run. Run the command from the project root to use the project's existing `data` directory.
 
+## Assertions
+
+Java assertions document internal assumptions and detect programming errors during development.
+They do not replace validation of user commands or saved data, and their expressions have no side effects.
+Enable them by adding `-ea` to the IDE's VM options or running `java -ea -jar build/libs/groot.jar`.
+JUnit tests explicitly enable assertions in Gradle.
+
+| Location | Assumption and justification |
+| --- | --- |
+| `Groot.executeCommand` | The command type is non-null and recognized. The parser must reject unknown input before dispatch. |
+| `Parser.parseTaskIndex` | The task count is non-negative. It comes from the application's collection size, not user input. Zero remains valid for an empty list. |
+| `TaskList.markAsDone` | The task is completed after marking. Task subclasses must honor this operation before the application reports success. |
+| `TaskList.markAsNotDone` | The task is incomplete after unmarking. This checks that task subclasses also honor the inverse operation. |
+| `TaskList.setDone` | The final status equals the requested status. Failed-save recovery depends on restoring the exact previous state. |
+
 ## AI use
 
 This project was developed with assistance from OpenAI Codex. AI was used to:

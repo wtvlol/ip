@@ -118,70 +118,79 @@ public class Groot {
      * @throws GrootException If command arguments or saved-task operations fail.
      */
     private String executeCommand(String command, CommandType commandType) throws GrootException {
-        switch (commandType) {
-            case BYE:
-                return " Bye. Hope to see you again soon!";
-            case LIST:
-                return getTaskListResponse(tasks.asList(), " Here are the tasks in your list:");
-            case FIND:
-                String keyword = parser.parseFindKeyword(command);
-                return getTaskListResponse(tasks.find(keyword),
-                        " Here are the matching tasks in your list:");
-            case MARK:
-                int taskIndex = parser.parseTaskIndex(command, commandType, tasks.size());
-                Task markedTask = tasks.get(taskIndex);
-                boolean wasDone = markedTask.isDone();
-                tasks.markAsDone(taskIndex);
-                try {
-                    Storage.saveTasks(tasks.asList());
-                } catch (GrootException error) {
-                    tasks.setDone(taskIndex, wasDone);
-                    throw error;
-                }
-                return " Nice! I've marked this task as done:\n   " + markedTask;
-            case UNMARK:
-                int unmarkedTaskIndex = parser.parseTaskIndex(command, commandType, tasks.size());
-                Task unmarkedTask = tasks.get(unmarkedTaskIndex);
-                boolean wasUnmarkedTaskDone = unmarkedTask.isDone();
-                tasks.markAsNotDone(unmarkedTaskIndex);
-                try {
-                    Storage.saveTasks(tasks.asList());
-                } catch (GrootException error) {
-                    tasks.setDone(unmarkedTaskIndex, wasUnmarkedTaskDone);
-                    throw error;
-                }
-                return " OK, I've marked this task as not done yet:\n   " + unmarkedTask;
-            case DELETE:
-                int deletedTaskIndex = parser.parseTaskIndex(command, commandType, tasks.size());
-                Task removedTask = tasks.delete(deletedTaskIndex);
-                try {
-                    Storage.saveTasks(tasks.asList());
-                } catch (GrootException error) {
-                    tasks.add(deletedTaskIndex, removedTask);
-                    throw error;
-                }
-                return " Noted. I've removed this task:\n   " + removedTask + "\n Now you have "
-                        + getTaskCountDescription() + ".";
-            case TODO:
-                // Fallthrough
-            case DEADLINE:
-                // Fallthrough
-            case EVENT:
-                Task task = parser.createTask(command, commandType);
-                tasks.add(task);
-                try {
-                    Storage.saveTasks(tasks.asList());
-                } catch (GrootException error) {
-                    tasks.delete(tasks.size() - 1);
-                    throw error;
-                }
-                return " Got it. I've added this task:\n   " + task + "\n Now you have "
-                        + getTaskCountDescription() + ".";
-            case HELP:
-                return HELP_MESSAGE;
-            default:
-                throw new IllegalStateException("Parser returned an unknown command");
+        // The parser rejects unknown input before command dispatch, so this indicates a programming error.
+        assert commandType != null && commandType != CommandType.UNKNOWN
+                : "Only recognized commands may reach execution";
+        return switch (commandType) {
+            case BYE -> " Bye. Hope to see you again soon!";
+            case LIST -> getTaskListResponse(tasks.asList(), " Here are the tasks in your list:");
+            case FIND -> findTasks(command);
+            case MARK, UNMARK -> updateTaskStatus(command, commandType);
+            case DELETE -> deleteTask(command);
+            case TODO, DEADLINE, EVENT -> addTask(command, commandType);
+            case HELP -> HELP_MESSAGE;
+            default -> throw new IllegalStateException("Parser returned an unknown command");
+        };
+    }
+
+    /**
+     * Finds tasks without changing the stored list and formats the matching results.
+     */
+    private String findTasks(String command) throws GrootException {
+        String keyword = parser.parseFindKeyword(command);
+        return getTaskListResponse(tasks.find(keyword), " Here are the matching tasks in your list:");
+    }
+
+    /**
+     * Applies a mark or unmark command and restores the previous status if saving fails.
+     */
+    private String updateTaskStatus(String command, CommandType commandType) throws GrootException {
+        int taskIndex = parser.parseTaskIndex(command, commandType, tasks.size());
+        Task task = tasks.get(taskIndex);
+        boolean wasDone = task.isDone();
+        boolean isDone = commandType == CommandType.MARK;
+        tasks.setDone(taskIndex, isDone);
+        try {
+            Storage.saveTasks(tasks.asList());
+        } catch (GrootException error) {
+            tasks.setDone(taskIndex, wasDone);
+            throw error;
         }
+        String response = isDone ? " Nice! I've marked this task as done:\n   "
+                : " OK, I've marked this task as not done yet:\n   ";
+        return response + task;
+    }
+
+    /**
+     * Deletes a task and restores its original position if saving fails.
+     */
+    private String deleteTask(String command) throws GrootException {
+        int taskIndex = parser.parseTaskIndex(command, CommandType.DELETE, tasks.size());
+        Task removedTask = tasks.delete(taskIndex);
+        try {
+            Storage.saveTasks(tasks.asList());
+        } catch (GrootException error) {
+            tasks.add(taskIndex, removedTask);
+            throw error;
+        }
+        return " Noted. I've removed this task:\n   " + removedTask + "\n Now you have "
+                + getTaskCountDescription() + ".";
+    }
+
+    /**
+     * Adds a parsed task and removes it again if saving fails.
+     */
+    private String addTask(String command, CommandType commandType) throws GrootException {
+        Task task = parser.createTask(command, commandType);
+        tasks.add(task);
+        try {
+            Storage.saveTasks(tasks.asList());
+        } catch (GrootException error) {
+            tasks.delete(tasks.size() - 1);
+            throw error;
+        }
+        return " Got it. I've added this task:\n   " + task + "\n Now you have "
+                + getTaskCountDescription() + ".";
     }
 
     /**
