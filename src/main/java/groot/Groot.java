@@ -1,5 +1,6 @@
 package groot;
 
+import java.util.List;
 import java.util.Scanner;
 
 import groot.exception.GrootException;
@@ -21,6 +22,7 @@ public class Groot {
             "   deadline DESCRIPTION /by YYYY-MM-DD - Add a deadline task.",
             "   event DESCRIPTION /from START /to END - Add an event task.",
             "   list - Show all tasks.",
+            "   sort [-r | --reverse] - Show deadlines by date; reverse shows latest first.",
             "   find KEYWORD - Find tasks by description.",
             "   mark NUMBER - Mark a task as done.",
             "   unmark NUMBER - Mark a task as not done.",
@@ -124,6 +126,7 @@ public class Groot {
         return switch (commandType) {
             case BYE -> " Bye. Hope to see you again soon!";
             case LIST -> getTaskListResponse(tasks.asList(), " Here are the tasks in your list:");
+            case SORT -> sortDeadlines(command);
             case FIND -> findTasks(command);
             case MARK, UNMARK -> updateTaskStatus(command, commandType);
             case DELETE -> deleteTask(command);
@@ -131,6 +134,23 @@ public class Groot {
             case HELP -> HELP_MESSAGE;
             default -> throw new IllegalStateException("Parser returned an unknown command");
         };
+    }
+
+    /**
+     * Displays sorted deadlines with their main-list numbers without changing or saving task state.
+     */
+    private String sortDeadlines(String command) throws GrootException {
+        boolean isReversed = parser.parseSortReverseFlag(command);
+        List<Integer> indices = tasks.getSortedDeadlineIndices(isReversed);
+        if (indices.isEmpty()) {
+            return " There are no deadlines to sort.";
+        }
+        String direction = isReversed ? "latest first" : "earliest first";
+        StringBuilder response = new StringBuilder(" Here are your deadlines sorted by date (" + direction + "):");
+        for (int index : indices) {
+            response.append("\n ").append(index + 1).append(".").append(tasks.get(index));
+        }
+        return response.toString();
     }
 
     /**

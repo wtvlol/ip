@@ -1,8 +1,12 @@
 package groot.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -132,6 +136,33 @@ public class ParserTest {
     public void parseCommandType_unknownOrEmptyInput_throwsGrootException() {
         assertThrows(GrootException.class, () -> parser.parseCommandType("unknown"));
         assertThrows(GrootException.class, () -> parser.parseCommandType(""));
+    }
+
+    @Test
+    public void parseSortReverseFlag_noFlag_defaultsToEarliestFirst() throws GrootException {
+        for (String command : new String[]{"sort", "SORT", " \tSort\t "}) {
+            assertEquals(CommandType.SORT, parser.parseCommandType(command));
+            assertFalse(parser.parseSortReverseFlag(command), command);
+        }
+    }
+
+    @Test
+    public void parseSortReverseFlag_validFlagAndWhitespace_returnsTrue() throws GrootException {
+        for (String command : List.of("sort -r", "sort --reverse", "SORT -R", " SoRt\t--REVERSE ",
+                "sort   \t -r\t")) {
+            assertEquals(CommandType.SORT, parser.parseCommandType(command));
+            assertTrue(parser.parseSortReverseFlag(command), command);
+        }
+    }
+
+    @Test
+    public void parseSortReverseFlag_invalidArguments_reportsUsage() throws GrootException {
+        for (String command : List.of("sort reverse", "sort deadline", "sort -x", "sort -r -r",
+                "sort -r --reverse", "sort --reverse extra", "sort --reverse=true", "sort --", "sort -h")) {
+            assertEquals(CommandType.SORT, parser.parseCommandType(command));
+            GrootException error = assertThrows(GrootException.class, () -> parser.parseSortReverseFlag(command));
+            assertEquals("Oops! Use: sort [-r | --reverse].", error.getMessage(), command);
+        }
     }
 
     /**

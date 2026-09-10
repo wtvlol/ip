@@ -1,7 +1,10 @@
 package groot.task;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.IntStream;
 
 /**
  * Owns the task collection and provides operations that may change it.
@@ -133,6 +136,25 @@ public class TaskList {
      */
     public List<Task> asList() {
         return List.copyOf(tasks);
+    }
+
+    /**
+     * Returns deadline positions ordered by date, then by case-insensitive description.
+     * Equal dates and descriptions retain their main-list order. Neither tasks nor the main list change.
+     *
+     * @param isReversed Whether to reverse date order only, leaving description ties in alphabetical order.
+     * @return Unmodifiable zero-based main-list indices, valid until tasks are added or removed.
+     */
+    public List<Integer> getSortedDeadlineIndices(boolean isReversed) {
+        Comparator<Integer> dateOrder = Comparator.comparing(index -> ((Deadline) tasks.get(index)).getDueDate());
+        if (isReversed) {
+            dateOrder = dateOrder.reversed();
+        }
+        return IntStream.range(0, tasks.size())
+                .filter(index -> tasks.get(index) instanceof Deadline)
+                .boxed()
+                .sorted(dateOrder.thenComparing(index -> tasks.get(index).getDescription().toLowerCase(Locale.ROOT)))
+                .toList();
     }
 
     /**

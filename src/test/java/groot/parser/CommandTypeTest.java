@@ -2,6 +2,8 @@ package groot.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -16,6 +18,7 @@ public class CommandTypeTest {
     public void from_exactKeyword_returnsMatchingCommandType() {
         assertEquals(CommandType.BYE, CommandType.from("bye"));
         assertEquals(CommandType.LIST, CommandType.from("list"));
+        assertEquals(CommandType.SORT, CommandType.from("sort"));
         assertEquals(CommandType.FIND, CommandType.from("find"));
         assertEquals(CommandType.MARK, CommandType.from("mark"));
         assertEquals(CommandType.UNMARK, CommandType.from("unmark"));
@@ -106,6 +109,24 @@ public class CommandTypeTest {
         assertEquals(CommandType.UNKNOWN, CommandType.from("please list"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("todo\tread book"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("mark\t1"));
+    }
+
+    @Test
+    public void from_sortCaseAndWhitespaceVariations_returnsSort() {
+        for (String command : List.of("sort", "SORT", " Sort ", "sort -r", "sort\t--REVERSE",
+                "\tSoRt \t -R\t", "sort invalid", "sort -r -r")) {
+            assertEquals(CommandType.SORT, CommandType.from(command), command);
+        }
+    }
+
+    @Test
+    public void from_sortPrefixesAndOtherRelaxedCommands_preservesUnknown() {
+        for (String command : List.of("sorting", "sort-r", "sort--reverse", "please sort", "LIST",
+                "TODO book", "todo\tbook", "mark\t1", "HELP")) {
+            assertEquals(CommandType.UNKNOWN, CommandType.from(command), command);
+        }
+        assertEquals(CommandType.TODO, CommandType.from("todo sort -r"));
+        assertEquals(CommandType.FIND, CommandType.from("find SORT"));
     }
 
     /**
