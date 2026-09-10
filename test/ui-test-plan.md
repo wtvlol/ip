@@ -253,7 +253,7 @@ ____________________________________________________________
 
 ## TC4: Reject malformed deadlines and events
 
-**Aim:** Verify errors for missing deadline/event fields, non-ISO and impossible deadline dates, then confirm a valid date is parsed and reformatted.
+**Aim:** Verify errors for missing deadline/event fields, non-ISO and impossible dates, and reversed event markers. Interleave invalid commands with valid tasks and confirm rejected inputs preserve the list.
 
 ### Input
 
@@ -268,7 +268,9 @@ event /from Mon /to Tue
 event meeting /from /to Tue
 event meeting /from Mon /to
 deadline return book /by 2019-12-01
+event meeting /to Tue /from Mon
 event meeting /from Mon /to Tue
+deadline report /by 2023-02-29
 list
 delete 1
 delete 1
@@ -330,9 +332,15 @@ ____________________________________________________________
  Now you have 1 task in the list.
 ____________________________________________________________
 ____________________________________________________________
+ Oops! Use: event DESCRIPTION /from START /to END
+____________________________________________________________
+____________________________________________________________
  Got it. I've added this task:
    [E][ ] meeting (from: Mon to: Tue)
  Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.
 ____________________________________________________________
 ____________________________________________________________
  Here are the tasks in your list:
