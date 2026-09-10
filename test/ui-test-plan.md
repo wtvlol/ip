@@ -786,7 +786,7 @@ ____________________________________________________________
 
 ## TC9: Display command help
 
-**Aim:** Verify that help lists every supported command, rejects trailing arguments, and does not change task state.
+**Aim:** Verify that streamed command lookup accepts the help alias, rejects alias prefixes and trailing arguments, and preserves task state when valid and invalid commands are interleaved.
 
 ### Input
 
@@ -794,6 +794,8 @@ ____________________________________________________________
 todo keep state
 help extra
 --help
+-hello
+-h extra
 list
 delete 1
 bye
@@ -841,6 +843,12 @@ ____________________________________________________________
    delete NUMBER - Delete a task.
    help, --help, -h - Show this help message.
    bye - Exit Groot.
+____________________________________________________________
+____________________________________________________________
+ Oops! I don't recognise that command.
+____________________________________________________________
+____________________________________________________________
+ Oops! I don't recognise that command.
 ____________________________________________________________
 ____________________________________________________________
  Here are the tasks in your list:
