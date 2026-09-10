@@ -10,12 +10,28 @@ Groot is a simple Java chatbot that saves todos, deadlines, and events between s
 | `deadline DESCRIPTION /by YYYY-MM-DD` | Adds a deadline task. |
 | `event DESCRIPTION /from START /to END` | Adds an event task. |
 | `list` | Displays all tasks. |
+| `sort`, `sort -r`, or `sort --reverse` | Displays only deadlines by date; reverse shows latest first. |
 | `find KEYWORD` | Finds tasks whose descriptions contain the keyword. |
 | `mark TASK_NUMBER` | Marks a task as done. |
 | `unmark TASK_NUMBER` | Marks a task as not done. |
 | `delete TASK_NUMBER` | Deletes a task. |
 | `help`, `--help`, or `-h` | Displays the command reference in Groot. |
 | `bye` | Exits Groot. |
+
+## Sorting deadlines
+
+Use `sort` for earliest-first deadlines, or `sort -r` / `sort --reverse` for latest first.
+Completed deadlines are included. Equal dates are ordered by description, ignoring capitalization;
+reverse changes date order only. Equal dates and names keep their main-list order.
+
+Sorting changes only this response: task order, saved data, and subsequent `list` and `find` behavior
+stay unchanged. Displayed numbers are the original main-list numbers, so use those numbers with
+`mark`, `unmark`, and `delete`. Run `list` or `sort` again after deleting tasks because numbers shift.
+Todos and events do not appear in the sorted response.
+
+The sort command and its flags accept case variations, extra spaces, and tabs. Other commands retain
+their existing syntax. Unsupported or repeated flags produce `Oops! Use: sort [-r | --reverse].`
+See the [sorting user guide](docs/README.md#sorting-deadlines-c-sort) for examples and exact output.
 
 ## Setting up in Intellij
 
