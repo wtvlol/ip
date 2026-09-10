@@ -2,6 +2,10 @@
 
 Each test case starts a fresh instance of `Groot`. Begin the suite without a `data` directory so TC1 covers first-run startup and later task commands cover automatic directory creation. Expected-output blocks contain program stdout only; console input is recorded separately.
 
+Run the recorded suite with Java assertions enabled (`JDK_JAVA_OPTIONS=-ea`).
+TC2 and TC6 exercise status postconditions; TC3 verifies that invalid user input still produces normal errors
+and preserves task state. JUnit separately checks impossible internal states and faulty task subclasses.
+
 ## TC1: Exit using bye
 
 **Aim:** Verify that Groot starts normally without an existing data folder or file and exits with the farewell message when the user enters `bye`.
@@ -157,7 +161,7 @@ ____________________________________________________________
 
 ## TC3: Reject invalid commands without corrupting tasks
 
-**Aim:** Verify unknown commands, invalid arguments, and argumentless command boundaries while ensuring rejected commands do not change stored tasks or end the session.
+**Aim:** Verify unknown commands, invalid arguments, and argumentless command boundaries with assertions enabled. Interleave valid commands with a zero task number and confirm the rejected input preserves the completed task.
 
 ### Input
 
@@ -171,6 +175,8 @@ mark
 mark two
 mark 2
 mark 1
+mark 0
+list
 unmark
 unmark 1
 list
@@ -229,6 +235,13 @@ ____________________________________________________________
 ____________________________________________________________
  Nice! I've marked this task as done:
    [T][X] read book
+____________________________________________________________
+____________________________________________________________
+ Oops! Task 0 is not in the list.
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][X] read book
 ____________________________________________________________
 ____________________________________________________________
  Oops! Tell me which task to unmark.
