@@ -141,6 +141,24 @@ java -jar build/libs/groot.jar
 
 Groot resolves its `data/groot.txt` path relative to the directory from which the JAR is run. Run the command from the project root to use the project's existing `data` directory.
 
+## Continuous integration
+
+[Java CI](.github/workflows/gradle.yml) runs on pushes and pull requests using Linux, macOS, and Windows.
+It follows the [SE-EDU workflow template](https://github.com/se-edu/duke/blob/full-template/.github/workflows/gradle.yml)
+and uses Zulu JDK 25 with JavaFX. Each job validates the Gradle wrapper, runs JUnit and Checkstyle through
+`check`, and builds the fat JAR with `shadowJar`. Assertions are enabled in JUnit by the Gradle configuration.
+
+To run the same build checks locally with Java 25:
+
+```shell
+./gradlew --no-daemon check shadowJar
+```
+
+After committing and pushing the workflow to your fork, view its results in the repository's **Actions** tab
+and in pull-request checks. If GitHub Actions is disabled for the fork, enable it in that tab first.
+When using a classic personal access token to push workflow files, the token needs the `workflow` scope
+in addition to repository access. Configure the token in your Git client; never store it in this repository.
+
 ## Assertions
 
 Java assertions document internal assumptions and detect programming errors during development.
