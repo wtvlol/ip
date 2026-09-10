@@ -837,6 +837,7 @@ ____________________________________________________________
    deadline DESCRIPTION /by YYYY-MM-DD - Add a deadline task.
    event DESCRIPTION /from START /to END - Add an event task.
    list - Show all tasks.
+   sort [-r | --reverse] - Show deadlines by date; reverse shows latest first.
    find KEYWORD - Find tasks by description.
    mark NUMBER - Mark a task as done.
    unmark NUMBER - Mark a task as not done.
@@ -858,6 +859,312 @@ ____________________________________________________________
  Noted. I've removed this task:
    [T][ ] keep state
  Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+
+## TC10: Sort deadlines without changing task order
+
+**Aim:** Verify empty and no-deadline responses, both reverse flags, forgiving casing and a literal tab, date/name ordering, completed deadlines, and original task numbers. Interleave invalid commands with valid sorting and task changes; confirm rejected commands leave the list unchanged and new tasks append normally. Leave five tasks for TC11.
+
+### Input
+
+```text
+sort -x
+sort
+todo groceries
+event meeting /from Mon 2pm /to 4pm
+sort --reverse
+deadline report /by 2026-09-20
+deadline beta /by 2026-09-12
+deadline Alpha /by 2026-09-12
+mark 5
+sort
+sort reverse
+SORT	-R
+sort -r -r
+sort -r --reverse
+list
+sort   --REVERSE
+sort --reverse extra
+sort --reverse=true
+sorting
+sort-r
+sort
+mark 4
+unmark 5
+delete 3
+sort
+deadline early /by 2025-01-01
+list
+sort
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+       \  |  /
+     ___\_|_/___
+    /   /   \   \
+   /   | o o |    |
+  |    |  ^  |    |
+  |    \ \_/ /    |
+   \    '---'    /
+    \  |||||||  /
+     | ||||||| |
+  ___|_|||||||_|___
+ /     |||||||     \
+/      |||||||      \
+       |||||||
+      /||| |||\
+     /_||| |||_\
+Hello! I'm Groot.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ Oops! Use: sort [-r | --reverse].
+____________________________________________________________
+____________________________________________________________
+ There are no deadlines to sort.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] groceries
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [E][ ] meeting (from: Mon 2pm to: 4pm)
+ Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ There are no deadlines to sort.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [D][ ] report (by: Sep 20 2026)
+ Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [D][ ] beta (by: Sep 12 2026)
+ Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [D][ ] Alpha (by: Sep 12 2026)
+ Now you have 5 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Nice! I've marked this task as done:
+   [D][X] Alpha (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (earliest first):
+ 5.[D][X] Alpha (by: Sep 12 2026)
+ 4.[D][ ] beta (by: Sep 12 2026)
+ 3.[D][ ] report (by: Sep 20 2026)
+____________________________________________________________
+____________________________________________________________
+ Oops! Use: sort [-r | --reverse].
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (latest first):
+ 3.[D][ ] report (by: Sep 20 2026)
+ 5.[D][X] Alpha (by: Sep 12 2026)
+ 4.[D][ ] beta (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Oops! Use: sort [-r | --reverse].
+____________________________________________________________
+____________________________________________________________
+ Oops! Use: sort [-r | --reverse].
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][ ] groceries
+ 2.[E][ ] meeting (from: Mon 2pm to: 4pm)
+ 3.[D][ ] report (by: Sep 20 2026)
+ 4.[D][ ] beta (by: Sep 12 2026)
+ 5.[D][X] Alpha (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (latest first):
+ 3.[D][ ] report (by: Sep 20 2026)
+ 5.[D][X] Alpha (by: Sep 12 2026)
+ 4.[D][ ] beta (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Oops! Use: sort [-r | --reverse].
+____________________________________________________________
+____________________________________________________________
+ Oops! Use: sort [-r | --reverse].
+____________________________________________________________
+____________________________________________________________
+ Oops! I don't recognise that command.
+____________________________________________________________
+____________________________________________________________
+ Oops! I don't recognise that command.
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (earliest first):
+ 5.[D][X] Alpha (by: Sep 12 2026)
+ 4.[D][ ] beta (by: Sep 12 2026)
+ 3.[D][ ] report (by: Sep 20 2026)
+____________________________________________________________
+____________________________________________________________
+ Nice! I've marked this task as done:
+   [D][X] beta (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ OK, I've marked this task as not done yet:
+   [D][ ] Alpha (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][ ] report (by: Sep 20 2026)
+ Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (earliest first):
+ 4.[D][ ] Alpha (by: Sep 12 2026)
+ 3.[D][X] beta (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [D][ ] early (by: Jan 01 2025)
+ Now you have 5 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][ ] groceries
+ 2.[E][ ] meeting (from: Mon 2pm to: 4pm)
+ 3.[D][X] beta (by: Sep 12 2026)
+ 4.[D][ ] Alpha (by: Sep 12 2026)
+ 5.[D][ ] early (by: Jan 01 2025)
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (earliest first):
+ 5.[D][ ] early (by: Jan 01 2025)
+ 4.[D][ ] Alpha (by: Sep 12 2026)
+ 3.[D][X] beta (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## TC11: Preserve main-list order after sorting and restarting
+
+**Aim:** Load TC10's tasks in their unsorted saved order with unchanged details and statuses. Verify reverse name ties, refreshed task numbers after deletions, a singleton result, invalid-input state preservation, and the common no-deadline response; remove the test tasks afterward.
+
+### Input
+
+```text
+list
+sort -r
+delete 5
+delete 4
+sort
+sort --reverse
+sort deadline
+list
+delete 3
+sort
+delete 2
+delete 1
+sort -r
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+       \  |  /
+     ___\_|_/___
+    /   /   \   \
+   /   | o o |    |
+  |    |  ^  |    |
+  |    \ \_/ /    |
+   \    '---'    /
+    \  |||||||  /
+     | ||||||| |
+  ___|_|||||||_|___
+ /     |||||||     \
+/      |||||||      \
+       |||||||
+      /||| |||\
+     /_||| |||_\
+Hello! I'm Groot.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][ ] groceries
+ 2.[E][ ] meeting (from: Mon 2pm to: 4pm)
+ 3.[D][X] beta (by: Sep 12 2026)
+ 4.[D][ ] Alpha (by: Sep 12 2026)
+ 5.[D][ ] early (by: Jan 01 2025)
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (latest first):
+ 4.[D][ ] Alpha (by: Sep 12 2026)
+ 3.[D][X] beta (by: Sep 12 2026)
+ 5.[D][ ] early (by: Jan 01 2025)
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][ ] early (by: Jan 01 2025)
+ Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][ ] Alpha (by: Sep 12 2026)
+ Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (earliest first):
+ 3.[D][X] beta (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Here are your deadlines sorted by date (latest first):
+ 3.[D][X] beta (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Oops! Use: sort [-r | --reverse].
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][ ] groceries
+ 2.[E][ ] meeting (from: Mon 2pm to: 4pm)
+ 3.[D][X] beta (by: Sep 12 2026)
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [D][X] beta (by: Sep 12 2026)
+ Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ There are no deadlines to sort.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [E][ ] meeting (from: Mon 2pm to: 4pm)
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [T][ ] groceries
+ Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ There are no deadlines to sort.
 ____________________________________________________________
 ____________________________________________________________
  Bye. Hope to see you again soon!

@@ -154,6 +154,25 @@ public class Parser {
     }
 
     /**
+     * Parses the optional reverse flag of a recognized sort command.
+     *
+     * @param command Full sort command, allowing case variations, spaces, and tabs.
+     * @return Whether deadlines should be displayed latest first.
+     * @throws GrootException If an unsupported or additional argument is present.
+     */
+    public boolean parseSortReverseFlag(String command) throws GrootException {
+        String[] tokens = command.trim().split("[ \\t]+");
+        if (tokens.length == 1) {
+            return false;
+        }
+        if (tokens.length == 2 && (tokens[1].equalsIgnoreCase("-r")
+                || tokens[1].equalsIgnoreCase("--reverse"))) {
+            return true;
+        }
+        throw new GrootException("Oops! Use: sort [-r | --reverse].");
+    }
+
+    /**
      * Extracts the keyword from a find command.
      *
      * @param command Full command entered by the user.

@@ -163,6 +163,71 @@ public class TaskListTest {
         assertEquals(List.of(), tasks.find("groceries"));
     }
 
+    @Test
+    public void getSortedDeadlineIndices_mixedTasksAndDates_returnsOnlyDeadlinesChronologically() {
+        Deadline completedDeadline = new Deadline("leap day", LocalDate.of(2024, 2, 29));
+        completedDeadline.markAsDone();
+        TaskList tasks = new TaskList(new Todo("todo"),
+                new Deadline("next year", LocalDate.of(2025, 1, 1)), completedDeadline,
+                new Event("meeting", "Mon 2pm", "4pm"),
+                new Deadline("previous year", LocalDate.of(2023, 12, 31)),
+                new Deadline("next month", LocalDate.of(2024, 3, 1)));
+        List<Task> originalOrder = tasks.asList();
+        List<String> originalData = originalOrder.stream().map(Task::toDataString).toList();
+
+        assertEquals(List.of(4, 2, 5, 1), tasks.getSortedDeadlineIndices(false));
+        assertEquals(List.of(1, 5, 2, 4), tasks.getSortedDeadlineIndices(true));
+        assertEquals(List.of(4, 2, 5, 1), tasks.getSortedDeadlineIndices(false));
+        assertEquals(originalOrder, tasks.asList());
+        assertEquals(originalData, tasks.asList().stream().map(Task::toDataString).toList());
+        assertTrue(completedDeadline.isDone());
+    }
+
+    @Test
+    public void getSortedDeadlineIndices_equalDates_keepsAlphabeticalTiesInBothDirections() {
+        LocalDate date = LocalDate.of(2026, 9, 12);
+        TaskList tasks = new TaskList(new Deadline("beta", date), new Deadline("Alpha", date),
+                new Deadline("alpha", date), new Deadline("Alpha", date),
+                new Deadline("earlier", date.minusDays(1)), new Deadline("later", date.plusDays(1)));
+
+        assertEquals(List.of(4, 1, 2, 3, 0, 5), tasks.getSortedDeadlineIndices(false));
+        assertEquals(List.of(5, 1, 2, 3, 0, 4), tasks.getSortedDeadlineIndices(true));
+        assertEquals(List.of(4, 1, 2, 3, 0, 5), tasks.getSortedDeadlineIndices(false));
+    }
+
+    @Test
+    public void getSortedDeadlineIndices_noDeadlines_returnsEmptyList() {
+        TaskList tasks = new TaskList(new Todo("todo"), new Event("event", "Mon", "Tue"));
+        for (boolean isReversed : new boolean[]{false, true}) {
+            assertEquals(List.of(), new TaskList().getSortedDeadlineIndices(isReversed));
+            assertEquals(List.of(), tasks.getSortedDeadlineIndices(isReversed));
+        }
+    }
+
+    @Test
+    public void getSortedDeadlineIndices_singleDeadline_returnsOriginalIndex() {
+        TaskList tasks = new TaskList(new Todo("todo"), new Deadline("report", LocalDate.of(2026, 9, 12)));
+        assertEquals(List.of(1), tasks.getSortedDeadlineIndices(false));
+        assertEquals(List.of(1), tasks.getSortedDeadlineIndices(true));
+        assertThrows(UnsupportedOperationException.class, () -> tasks.getSortedDeadlineIndices(false).add(0));
+    }
+
+    @Test
+    public void getSortedDeadlineIndices_afterDeletionAndAddition_recomputesMainListIndices() {
+        LocalDate date = LocalDate.of(2026, 9, 12);
+        TaskList tasks = new TaskList(new Todo("todo"), new Deadline("later", date.plusDays(1)),
+                new Deadline("earlier", date));
+        assertEquals(List.of(2, 1), tasks.getSortedDeadlineIndices(false));
+
+        tasks.delete(1);
+        tasks.add(new Deadline("earliest", date.minusDays(1)));
+
+        assertEquals(List.of(2, 1), tasks.getSortedDeadlineIndices(false));
+        assertEquals("todo", tasks.get(0).getDescription());
+        assertEquals("earlier", tasks.get(1).getDescription());
+        assertEquals("earliest", tasks.get(2).getDescription());
+    }
+
     /**
      * Verifies that find returns no matches for an empty task list.
      */

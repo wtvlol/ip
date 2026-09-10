@@ -11,6 +11,8 @@ public enum CommandType {
     BYE(false, "bye"),
     /** Displays all tasks. */
     LIST(false, "list"),
+    /** Displays deadlines by date without changing the main task order. */
+    SORT(true, "sort"),
     /** Displays tasks whose descriptions contain a keyword. */
     FIND(true, "find"),
     /** Marks a selected task as completed. */
@@ -70,6 +72,11 @@ public enum CommandType {
      * Returns whether the command uses this type's canonical keyword or an alias.
      */
     private boolean matches(String command) {
+        if (this == SORT) {
+            // Only sort accepts case variations and tab separators; preserve other commands' syntax.
+            String keyword = command.trim().split("[ \\t]+", 2)[0];
+            return keyword.equalsIgnoreCase(getKeyword());
+        }
         return keywords.stream()
                 .anyMatch(keyword -> command.equals(keyword)
                         || (acceptsArguments && command.startsWith(keyword + " ")));
