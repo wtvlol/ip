@@ -118,6 +118,9 @@ public class Groot {
      * @throws GrootException If command arguments or saved-task operations fail.
      */
     private String executeCommand(String command, CommandType commandType) throws GrootException {
+        // The parser rejects unknown input before command dispatch, so this indicates a programming error.
+        assert commandType != null && commandType != CommandType.UNKNOWN
+                : "Only recognized commands may reach execution";
         return switch (commandType) {
             case BYE -> " Bye. Hope to see you again soon!";
             case LIST -> getTaskListResponse(tasks.asList(), " Here are the tasks in your list:");

@@ -1,6 +1,7 @@
 package groot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -15,11 +16,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Tests command responses and failed-save recovery in processes with isolated task storage.
+ * Tests command responses and failed-save recovery with isolated storage and assertions enabled.
  */
 public class GrootTest {
     @TempDir
     public Path temporaryDirectory;
+
+    @Test
+    public void main_invalidThenValidCommands_reportsErrorsAndContinues() throws Exception {
+        String output = runProcess(Groot.class, "unknown\n\nhelp\nbye\n");
+        assertTrue(output.contains("Oops! I don't recognise that command."), output);
+        assertTrue(output.contains("Oops! Please enter a command."), output);
+        assertTrue(output.contains("Here are the commands you can use:"), output);
+        assertTrue(output.contains("Bye. Hope to see you again soon!"), output);
+        assertFalse(output.contains("AssertionError"), output);
+    }
 
     @Test
     public void getResponse_repeatedStatusCommands_preservesResponses() throws Exception {
@@ -83,7 +94,7 @@ public class GrootTest {
         String testClasses = Path.of(GrootTest.class.getProtectionDomain().getCodeSource().getLocation().toURI())
                 .toString();
         String classPath = productionClasses + File.pathSeparator + testClasses;
-        List<String> command = new ArrayList<>(List.of(javaExecutable, "-cp", classPath, entryPoint.getName()));
+        List<String> command = new ArrayList<>(List.of(javaExecutable, "-ea", "-cp", classPath, entryPoint.getName()));
         command.addAll(List.of(arguments));
         Process process = new ProcessBuilder(command).directory(temporaryDirectory.toFile())
                 .redirectErrorStream(true).start();
