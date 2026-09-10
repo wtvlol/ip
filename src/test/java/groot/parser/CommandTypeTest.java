@@ -36,6 +36,17 @@ public class CommandTypeTest {
     }
 
     /**
+     * Verifies that command words and aliases in arguments do not override the leading keyword.
+     */
+    @Test
+    public void from_commandWordsInArguments_usesLeadingKeyword() {
+        assertEquals(CommandType.TODO, CommandType.from("todo help"));
+        assertEquals(CommandType.TODO, CommandType.from("todo --help"));
+        assertEquals(CommandType.FIND, CommandType.from("find mark"));
+        assertEquals(CommandType.TODO, CommandType.from("todo bye"));
+    }
+
+    /**
      * Verifies that commands designed to accept arguments are recognized with arguments present.
      */
     @Test
@@ -83,6 +94,8 @@ public class CommandTypeTest {
         assertEquals(CommandType.UNKNOWN, CommandType.from("todoist"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("marked 1"));
         assertEquals(CommandType.UNKNOWN, CommandType.from("events meeting"));
+        assertEquals(CommandType.UNKNOWN, CommandType.from("--helpful"));
+        assertEquals(CommandType.UNKNOWN, CommandType.from("-hello"));
     }
 
     /**

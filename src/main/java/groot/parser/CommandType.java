@@ -1,5 +1,6 @@
 package groot.parser;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -59,25 +60,18 @@ public enum CommandType {
      * @return Matching command type, or {@link #UNKNOWN} if none matches.
      */
     public static CommandType from(String command) {
-        for (CommandType type : values()) {
-            if (type.matches(command)) {
-                return type;
-            }
-        }
-        return UNKNOWN;
+        return Arrays.stream(values())
+                .filter(type -> type.matches(command))
+                .findFirst()
+                .orElse(UNKNOWN);
     }
 
     /**
      * Returns whether the command uses this type's canonical keyword or an alias.
      */
     private boolean matches(String command) {
-        for (String keyword : keywords) {
-            boolean hasAcceptedArguments = acceptsArguments
-                    && command.startsWith(keyword + " ");
-            if (command.equals(keyword) || hasAcceptedArguments) {
-                return true;
-            }
-        }
-        return false;
+        return keywords.stream()
+                .anyMatch(keyword -> command.equals(keyword)
+                        || (acceptsArguments && command.startsWith(keyword + " ")));
     }
 }
