@@ -33,6 +33,9 @@ public final class IsolatedProcess {
         List<String> command = new ArrayList<>();
         command.add(Path.of(System.getProperty("java.home"), "bin", "java").toString());
         command.add("-ea");
+        // Match Files.readString's UTF-8 decoding, including on Windows with a legacy console encoding.
+        command.add("-Dstdout.encoding=UTF-8");
+        command.add("-Dstderr.encoding=UTF-8");
         if (entryPoint.getPackageName().equals("groot.ui")) {
             // The project's Java 25 FX distribution supplies native libraries for the host architecture.
             command.add("--add-modules=javafx.controls,javafx.fxml");
