@@ -62,14 +62,22 @@ public class GuiTest {
         public static void main(String[] args) throws Exception {
             FxTestRuntime.run(() -> {
                 Stage stage = new Stage();
+                double[] requestedSize = new double[2];
+                // Check the requested size before the window manager fits it to the available screen.
+                stage.setOnShowing(event -> {
+                    requestedSize[0] = stage.getWidth();
+                    requestedSize[1] = stage.getHeight();
+                });
                 try {
                     new Main().start(stage);
                     assertTrue(stage.isShowing());
+                    assertEquals(1000, requestedSize[0]);
+                    assertEquals(720, requestedSize[1]);
                     assertEquals("Groot", stage.getTitle());
                     assertEquals(800, stage.getMinWidth());
-                    assertEquals(1000, stage.getWidth());
+                    assertTrue(stage.getWidth() >= 800 && stage.getWidth() <= 1000);
                     assertEquals(600, stage.getMinHeight());
-                    assertEquals(720, stage.getHeight());
+                    assertTrue(stage.getHeight() >= 600 && stage.getHeight() <= 720);
                     Parent root = stage.getScene().getRoot();
                     TextField input = (TextField) root.lookup("#userInput");
                     Button send = (Button) root.lookup("#sendButton");

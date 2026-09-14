@@ -19,8 +19,10 @@ deadlines, and events; submit add/mark/unmark/delete commands and check numbers 
 Search, sorting, rejected commands, and failed saves must preserve main-list panel state.
 Verify G/You badges, the initial welcome card, blank-input handling, Enter/Send submission,
 input clearing, wrapping, independent scrolling, and scrolling to the latest reply.
-The default window is 1000 × 720 and the minimum is 800 × 600. Visually inspect the
-full window with representative tasks before refreshing `docs/Ui.png`.
+The requested default window is 1000 × 720 and the minimum is 800 × 600. Check the
+requested size before showing the window; afterward, allow the window manager to
+fit it to the display within those bounds. Visually inspect the full window with
+representative tasks before refreshing `docs/Ui.png`.
 
 ## TC1: Exit using bye
 
