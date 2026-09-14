@@ -37,3 +37,12 @@
 .delete-label {
     -fx-background-color: lightpink;
 }
+
+/* Error replies use a label and bold text in addition to color. */
+.error-label {
+    -fx-background-color: #fff1f2;
+    -fx-border-color: #b91c1c;
+    -fx-border-width: 2px;
+    -fx-text-fill: #991b1b;
+    -fx-font-weight: bold;
+}

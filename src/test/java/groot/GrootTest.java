@@ -192,6 +192,34 @@ public class GrootTest {
         assertArrayEquals(before, Files.readAllBytes(dataFile));
     }
 
+    @Test
+    public void getCommandResponse_invalidThenValidCommands_classifiesErrorsWithoutChangingState() throws Exception {
+        Path dataFile = writeSortFixture();
+        byte[] before = Files.readAllBytes(dataFile);
+        String output = runProcess(ResponseStatusScenario.class, "", "unknown", "list", "todo",
+                "mark 0", "list", "deadline report /by invalid", "sort", "help");
+        assertEquals("true\nfalse\ntrue\ntrue\nfalse\ntrue\nfalse\nfalse\n", output);
+        assertArrayEquals(before, Files.readAllBytes(dataFile));
+    }
+
+    /**
+     * Prints response classifications using isolated storage.
+     */
+    public static class ResponseStatusScenario {
+        /**
+         * Processes commands in order so errors cannot leak into later successful replies.
+         *
+         * @param args Commands to process.
+         * @throws Exception If saved tasks cannot be loaded.
+         */
+        public static void main(String[] args) throws Exception {
+            Groot groot = new Groot();
+            for (String command : args) {
+                System.out.println(groot.getCommandResponse(command).isError());
+            }
+        }
+    }
+
     /**
      * Creates saved tasks inside the child process's isolated working directory.
      */

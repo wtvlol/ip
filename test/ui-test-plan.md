@@ -6,6 +6,12 @@ Run the recorded suite with Java assertions enabled (`JDK_JAVA_OPTIONS=-ea`).
 TC2 and TC6 exercise status postconditions; TC3 verifies that invalid user input still produces normal errors
 and preserves task state. JUnit separately checks impossible internal states and faulty task subclasses.
 
+GUI error highlighting is covered separately: submit `unknown`, then `list`, then `todo`,
+then `help`. Each rejected command should have an “Error:” prefix, bold dark red text,
+a pale red background, and a red border. Successful replies should retain ordinary styling,
+and earlier error bubbles should stay highlighted. Console wording remains unchanged;
+the existing invalid-input and state-preservation cases remain applicable.
+
 ## TC1: Exit using bye
 
 **Aim:** Verify that Groot starts normally without an existing data folder or file and exits with the farewell message when the user enters `bye`.

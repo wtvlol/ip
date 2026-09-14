@@ -2,6 +2,7 @@ package groot.ui;
 
 import java.util.Objects;
 
+import groot.CommandResponse;
 import groot.Groot;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -59,10 +60,11 @@ public class MainWindow extends AnchorPane {
             return;
         }
 
-        String response = groot.getResponse(input);
+        CommandResponse response = groot.getCommandResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getGrootDialog(response, grootImage));
+                response.isError() ? DialogBox.getErrorDialog(response.text(), grootImage)
+                        : DialogBox.getGrootDialog(response.text(), grootImage));
         userInput.clear();
     }
 
