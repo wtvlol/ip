@@ -5,16 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import groot.testutil.IsolatedProcess;
 
 /**
  * Tests command responses and failed-save recovery with isolated storage and assertions enabled.
@@ -243,28 +240,7 @@ public class GrootTest {
      * Runs a scenario with its own working directory so tests never touch the user's saved tasks.
      */
     private String runProcess(Class<?> entryPoint, String input, String... arguments) throws Exception {
-        String javaExecutable = Path.of(System.getProperty("java.home"), "bin", "java").toString();
-        String productionClasses = Path.of(Groot.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-                .toString();
-        String testClasses = Path.of(GrootTest.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-                .toString();
-        String classPath = productionClasses + File.pathSeparator + testClasses;
-        List<String> command = new ArrayList<>(List.of(javaExecutable, "-ea", "-cp", classPath, entryPoint.getName()));
-        command.addAll(List.of(arguments));
-        Process process = new ProcessBuilder(command).directory(temporaryDirectory.toFile())
-                .redirectErrorStream(true).start();
-        try {
-            try (var processInput = process.getOutputStream()) {
-                processInput.write(input.getBytes(StandardCharsets.UTF_8));
-            }
-            assertTrue(process.waitFor(10, TimeUnit.SECONDS), "The scenario must finish within ten seconds");
-            String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8)
-                    .replace("\r\n", "\n");
-            assertEquals(0, process.exitValue(), output);
-            return output;
-        } finally {
-            process.destroyForcibly();
-        }
+        return IsolatedProcess.run(temporaryDirectory, entryPoint, input, arguments);
     }
 
     /**

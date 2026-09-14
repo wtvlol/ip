@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,30 @@ import org.junit.jupiter.api.Test;
  * Tests task-collection operations performed by {@link TaskList}.
  */
 public class TaskListTest {
+
+    @Test
+    public void collections_mutationsAndSnapshots_preserveOwnershipAndOrder() {
+        Task first = new Todo("first");
+        Task second = new Todo("second");
+        ArrayList<Task> input = new ArrayList<>(List.of(first));
+        TaskList tasks = new TaskList(input);
+        input.clear();
+        assertEquals(1, tasks.size());
+        List<Task> snapshot = tasks.asList();
+        tasks.add(second);
+        assertEquals(List.of(first), snapshot);
+        assertThrows(UnsupportedOperationException.class, () -> snapshot.add(second));
+        assertSame(first, tasks.delete(0));
+        tasks.add(0, first);
+        tasks.add(tasks.size(), new Todo("third"));
+        assertEquals(List.of(first, second), tasks.asList().subList(0, 2));
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.get(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.delete(tasks.size()));
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.add(5, first));
+        assertEquals(3, tasks.size());
+        assertThrows(UnsupportedOperationException.class, () -> tasks.find("first").clear());
+        assertThrows(UnsupportedOperationException.class, () -> tasks.getSortedDeadlineIndices(false).add(0));
+    }
 
     @Test
     public void markAsDone_allTaskTypes_completesOnlySelectedTask() {

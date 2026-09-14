@@ -34,4 +34,16 @@ jobs:
           java-package: jdk+fx
 
       - name: Build and check with Gradle
-        run: ./gradlew --no-daemon check shadowJar
+        run: |
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            xvfb-run -a ./gradlew --no-daemon check shadowJar
+          else
+            ./gradlew --no-daemon check shadowJar
+          fi
+
+      - name: Upload coverage and test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ matrix.platform }}
+          path: build/reports/
