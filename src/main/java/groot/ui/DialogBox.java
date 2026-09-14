@@ -69,6 +69,19 @@ public class DialogBox extends HBox {
     }
 
     /**
+     * Creates a highlighted error reply with a text label as well as distinct colors.
+     *
+     * @param text Error explanation.
+     * @param image Groot display image.
+     * @return Dialog box for a failed command.
+     */
+    public static DialogBox getErrorDialog(String text, Image image) {
+        DialogBox dialogBox = getGrootDialog("Error: " + text.strip(), image);
+        dialogBox.dialog.getStyleClass().add("error-label");
+        return dialogBox;
+    }
+
+    /**
      * Moves the display image to the left of the response text.
      */
     private void flip() {

@@ -103,11 +103,21 @@ public class Groot {
      * @return Groot's response to the command.
      */
     public String getResponse(String command) {
+        return getCommandResponse(command).text();
+    }
+
+    /**
+     * Processes a command and identifies errors for presentation by the GUI.
+     *
+     * @param command User command to process.
+     * @return Response text and whether the command failed.
+     */
+    public CommandResponse getCommandResponse(String command) {
         try {
             CommandType commandType = parser.parseCommandType(command);
-            return executeCommand(command, commandType);
+            return new CommandResponse(executeCommand(command, commandType), false);
         } catch (GrootException error) {
-            return " " + error.getMessage();
+            return new CommandResponse(" " + error.getMessage(), true);
         }
     }
 
