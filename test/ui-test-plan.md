@@ -5,6 +5,8 @@ Each test case starts a fresh instance of `Groot`. Begin the suite without a `da
 Run the recorded suite with Java assertions enabled (`JDK_JAVA_OPTIONS=-ea`).
 TC2 and TC6 exercise status postconditions; TC3 verifies that invalid user input still produces normal errors
 and preserves task state. JUnit separately checks impossible internal states and faulty task subclasses.
+The separate `test/storage-ui-test-plan.md` covers startup with an invalid saved date;
+run it in a separate temporary repository with its specified fixture.
 
 GUI error highlighting is covered separately: submit `unknown`, then `list`, then `todo`,
 then `help`. Each rejected command should have an “Error:” prefix, bold dark red text,
@@ -1171,6 +1173,82 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  There are no deadlines to sort.
+____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## TC12: Reject invalid dates and oversized task numbers
+
+**Aim:** Interleave rejected date and number inputs with valid commands and verify that task state remains unchanged.
+
+### Input
+
+```text
+todo sentinel
+deadline invalid /by 2025-02-29
+list
+deadline invalid /by nonsense
+list
+mark 2147483648
+list
+delete 1
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+       \  |  /
+     ___\_|_/___
+    /   /   \   \
+   /   | o o |    |
+  |    |  ^  |    |
+  |    \ \_/ /    |
+   \    '---'    /
+    \  |||||||  /
+     | ||||||| |
+  ___|_|||||||_|___
+ /     |||||||     \
+/      |||||||      \
+       |||||||
+      /||| |||\
+     /_||| |||_\
+Hello! I'm Groot.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] sentinel
+ Now you have 1 task in the list.
+____________________________________________________________
+____________________________________________________________
+ Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][ ] sentinel
+____________________________________________________________
+____________________________________________________________
+ Oops! Use deadline dates in yyyy-MM-dd format, e.g. 2019-10-15.
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][ ] sentinel
+____________________________________________________________
+____________________________________________________________
+ Oops! The task number must be a whole number.
+____________________________________________________________
+____________________________________________________________
+ Here are the tasks in your list:
+ 1.[T][ ] sentinel
+____________________________________________________________
+____________________________________________________________
+ Noted. I've removed this task:
+   [T][ ] sentinel
+ Now you have 0 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  Bye. Hope to see you again soon!

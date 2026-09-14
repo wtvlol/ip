@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
+    id 'jacoco'
     id 'com.gradleup.shadow' version '9.5.1'
 }
 
@@ -27,7 +28,17 @@ tasks.withType(Checkstyle).configureEach {
     }
 }
 
+configurations {
+    childCoverageAgent
+}
+
+jacoco {
+    toolVersion = '0.8.14'
+}
+
 dependencies {
+    childCoverageAgent 'org.jacoco:org.jacoco.agent:0.8.14:runtime'
+
     String javaFxVersion = '17.0.7'
     String jUnitVersion = '5.14.4'
 
@@ -45,6 +56,7 @@ dependencies {
     implementation "org.openjfx:javafx-graphics:${javaFxVersion}:linux"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${jUnitVersion}"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
@@ -53,6 +65,15 @@ dependencies {
 test {
     useJUnitPlatform()
     enableAssertions = true
+    inputs.files configurations.childCoverageAgent
+    outputs.dir layout.buildDirectory.dir('jacoco/children')
+    doFirst {
+        delete layout.buildDirectory.dir('jacoco/children')
+        systemProperty 'groot.test.classpath', sourceSets.test.runtimeClasspath.asPath
+        systemProperty 'groot.test.coverageAgent', configurations.childCoverageAgent.singleFile.absolutePath
+        systemProperty 'groot.test.coverageDirectory', layout.buildDirectory.dir('jacoco/children').get().asFile
+    }
+    finalizedBy jacocoTestReport
 
     testLogging {
         events 'passed', 'skipped', 'failed'
@@ -86,3 +107,33 @@ shadowJar {
 run {
     standardInput = System.in
 }
+
+// Include isolated command, storage, and JavaFX processes in the same report.
+jacocoTestReport {
+    dependsOn test
+    executionData fileTree(layout.buildDirectory.dir('jacoco')) { include '**/*.exec' }
+    reports {
+        html.required = true
+        xml.required = true
+    }
+}
+
+// Check the combined application coverage without excluding bootstrap or error paths.
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    executionData fileTree(layout.buildDirectory.dir('jacoco')) { include '**/*.exec' }
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.95
+            }
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.90
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
