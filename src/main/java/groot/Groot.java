@@ -1,12 +1,17 @@
 package groot;
 
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 import groot.exception.GrootException;
 import groot.parser.CommandType;
 import groot.parser.Parser;
 import groot.storage.Storage;
+import groot.task.Deadline;
+import groot.task.Event;
 import groot.task.Task;
 import groot.task.TaskList;
 
@@ -94,6 +99,29 @@ public class Groot {
                 break;
             }
         }
+    }
+
+    /**
+     * Returns immutable task summaries in main-list order for the read-only task panel.
+     *
+     * @return A snapshot whose values do not change when later commands modify tasks.
+     */
+    public List<TaskSummary> getTaskSummaries() {
+        List<TaskSummary> summaries = new ArrayList<>();
+        for (Task task : tasks.asList()) {
+            String type = "Todo";
+            String schedule = "";
+            if (task instanceof Deadline deadline) {
+                type = "Deadline";
+                schedule = "Due " + deadline.getDueDate().format(
+                        DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH));
+            } else if (task instanceof Event event) {
+                type = "Event";
+                schedule = event.getStart() + " → " + event.getEnd();
+            }
+            summaries.add(new TaskSummary(summaries.size() + 1, type, task.getDescription(), task.isDone(), schedule));
+        }
+        return List.copyOf(summaries);
     }
 
     /**

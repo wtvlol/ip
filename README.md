@@ -207,3 +207,13 @@ This project was developed with assistance from OpenAI Codex. AI was used to:
 All AI-generated suggestions were reviewed before use. The source code was inspected, and the recorded UI test plan was run with Java 25 to verify the resulting behavior. The project author remains responsible for the final implementation.
 
 The JUnit coverage target is the approximately 50% highest-value methods, prioritizing complex, core, and critical business logic over trivial accessors. After each code change, the affected classes and their JUnit tests must be reviewed and the tests updated as needed to continue meeting this target.
+
+## GUI acknowledgements
+
+The original JavaFX GUI was adapted from the SE-EDU JavaFX tutorial (dialog components
+and FXML loading). The redesign retains that foundation and was implemented with
+OpenAI Codex assistance, including the task panel, styling, and regression tests.
+
+The existing character artwork in `src/main/resources/images/background.jpg` is retained.
+Its original artist and source are not recorded in this repository; attribution remains
+unresolved and must be verified by the project author. No new artwork was generated.

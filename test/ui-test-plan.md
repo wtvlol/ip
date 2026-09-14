@@ -14,6 +14,14 @@ a pale red background, and a red border. Successful replies should retain ordina
 and earlier error bubbles should stay highlighted. Console wording remains unchanged;
 the existing invalid-input and state-preservation cases remain applicable.
 
+The JavaFX tests also cover the read-only task panel and chat layout: load saved todos,
+deadlines, and events; submit add/mark/unmark/delete commands and check numbers and counts.
+Search, sorting, rejected commands, and failed saves must preserve main-list panel state.
+Verify G/You badges, the initial welcome card, blank-input handling, Enter/Send submission,
+input clearing, wrapping, independent scrolling, and scrolling to the latest reply.
+The default window is 1000 × 720 and the minimum is 800 × 600. Visually inspect the
+full window with representative tasks before refreshing `docs/Ui.png`.
+
 ## TC1: Exit using bye
 
 **Aim:** Verify that Groot starts normally without an existing data folder or file and exits with the farewell message when the user enters `bye`.

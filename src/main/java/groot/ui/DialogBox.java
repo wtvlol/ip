@@ -1,94 +1,66 @@
 package groot.ui;
 
 import java.io.IOException;
-import java.util.Collections;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 /**
- * Represents a dialog box containing a speaker image and message text.
+ * Presents one message with a compact speaker badge and wrapping bubble.
  */
 public class DialogBox extends HBox {
     @FXML
     private Label dialog;
-
     @FXML
-    private ImageView displayPicture;
+    private Label speakerBadge;
 
     /**
-     * Creates and loads a dialog box.
-     *
-     * @param text Message displayed in the dialog box.
-     * @param image Image representing the speaker.
+     * Loads a message bubble and its speaker badge.
      */
-    private DialogBox(String text, Image image) {
+    private DialogBox(String text, String speaker) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
-            fxmlLoader.setController(this);
-            fxmlLoader.setRoot(this);
-            fxmlLoader.load();
+            FXMLLoader loader = new FXMLLoader(DialogBox.class.getResource("/view/DialogBox.fxml"));
+            loader.setController(this);
+            loader.setRoot(this);
+            loader.load();
         } catch (IOException error) {
             throw new IllegalStateException("Unable to load the dialog box layout", error);
         }
-
-        dialog.setText(text);
-        displayPicture.setImage(image);
+        dialog.setText(text.strip());
+        speakerBadge.setText(speaker);
+        dialog.maxWidthProperty().bind(widthProperty().multiply(0.83).subtract(48));
     }
 
     /**
-     * Creates a dialog box for a user message.
-     *
-     * @param text User message.
-     * @param image User display image.
-     * @return Dialog box for the user.
+     * Creates a right-aligned user message.
      */
-    public static DialogBox getUserDialog(String text, Image image) {
-        return new DialogBox(text, image);
+    public static DialogBox getUserDialog(String text) {
+        DialogBox box = new DialogBox(text, "You");
+        box.getChildren().setAll(box.dialog, box.speakerBadge);
+        box.setAlignment(Pos.TOP_RIGHT);
+        box.dialog.getStyleClass().add("user-label");
+        box.speakerBadge.getStyleClass().add("user-badge");
+        return box;
     }
 
     /**
-     * Creates a dialog box for a Groot response.
-     *
-     * @param text Groot response.
-     * @param image Groot display image.
-     * @return Dialog box for Groot.
+     * Creates a left-aligned Groot reply.
      */
-    public static DialogBox getGrootDialog(String text, Image image) {
-        DialogBox dialogBox = new DialogBox(text, image);
-        dialogBox.flip();
-        return dialogBox;
+    public static DialogBox getGrootDialog(String text) {
+        DialogBox box = new DialogBox(text, "G");
+        box.dialog.getStyleClass().add("reply-label");
+        return box;
     }
 
     /**
-     * Creates a highlighted error reply with a text label as well as distinct colors.
-     *
-     * @param text Error explanation.
-     * @param image Groot display image.
-     * @return Dialog box for a failed command.
+     * Creates an error reply distinguished by both text and color.
      */
-    public static DialogBox getErrorDialog(String text, Image image) {
-        DialogBox dialogBox = getGrootDialog("Error: " + text.strip(), image);
-        dialogBox.dialog.getStyleClass().add("error-label");
-        return dialogBox;
-    }
-
-    /**
-     * Moves the display image to the left of the response text.
-     */
-    private void flip() {
-        ObservableList<Node> children = FXCollections.observableArrayList(getChildren());
-        Collections.reverse(children);
-        getChildren().setAll(children);
-        setAlignment(Pos.TOP_LEFT);
-        dialog.getStyleClass().add("reply-label");
+    public static DialogBox getErrorDialog(String text) {
+        DialogBox box = getGrootDialog("Error: " + text.strip());
+        box.dialog.getStyleClass().add("error-label");
+        return box;
     }
 }

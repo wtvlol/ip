@@ -6,8 +6,8 @@ import groot.Groot;
 import groot.exception.GrootException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
@@ -25,13 +25,15 @@ public class Main extends Application {
         try {
             Groot groot = new Groot();
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
-            AnchorPane root = fxmlLoader.load();
+            Parent root = fxmlLoader.load();
             fxmlLoader.<MainWindow>getController().setGroot(groot);
 
-            stage.setMinHeight(220);
-            stage.setMinWidth(417);
+            stage.setMinHeight(600);
+            stage.setMinWidth(800);
             stage.setTitle("Groot");
             stage.setScene(new Scene(root));
+            stage.setWidth(1000);
+            stage.setHeight(720);
             stage.show();
         } catch (IOException | GrootException error) {
             throw new IllegalStateException("Unable to start Groot", error);

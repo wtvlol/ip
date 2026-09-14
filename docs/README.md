@@ -3,6 +3,10 @@
 Groot helps you keep track of todos, deadlines, and events. Type a command, press **Enter**
 or click **Send**, and Groot replies in the chat. Your tasks are saved automatically.
 
+The **Your tasks** panel on the left keeps your list in view, with task numbers, types,
+schedules, completion status, and total/completed counts. It is read-only: use commands
+in the chat to make changes. The panel and chat scroll independently.
+
 ![The full Groot window showing a task list and a highlighted error](Ui.png)
 
 [Getting started](#getting-started) · [Commands](#commands) · [Task numbers](#reading-your-task-list)
@@ -79,10 +83,11 @@ Here are the tasks in your list:
 For example, `mark 2` marks **Submit report** as done, and `unmark 2` reverses that status.
 Completed tasks stay in the list until you delete them.
 
-Always use the numbers from **`list`** with `mark`, `unmark`, and `delete`.
-Deleting a task shifts the later numbers, so run `list` again afterward.
+Always use the numbers from **Your tasks** or **`list`** with `mark`, `unmark`, and `delete`.
+Deleting a task shifts the later numbers; the panel updates automatically after each command.
+`find` and `sort` change only the chat reply, so the panel always shows the main-list order.
 **Search results are numbered separately**: a result numbered `1` by `find` may be task `2`
-in the main list. Run `list` to get its number before changing it.
+in the main list. Check the panel or run `list` to get its number before changing it.
 
 ## Sorting deadlines (C-Sort)
 
