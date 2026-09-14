@@ -12,7 +12,7 @@ On Linux without a display, prefix the Gradle command with `xvfb-run -a`.
 The CI workflow does this automatically; macOS and Windows retain their existing jobs.
 GUI tests require a working JavaFX display and fail rather than silently skip when one is unavailable.
 
-The JUnit suite has 130 executed cases, including parameterized cases and three
+The JUnit suite has 133 executed cases, including parameterized cases and four
 JavaFX scenarios. Storage, command workflows, and GUI scenarios run in child Java
 processes with temporary working directories. Each child receives the complete
 test classpath, assertions, its own JaCoCo output file, and a 30-second timeout.
@@ -27,10 +27,10 @@ at `.agents/skills/test-ui/scripts/run_ui_tests.py`.
 
 ## Results and coverage gates
 
-- JUnit: **130 passed**, none failed or skipped.
+- JUnit: **133 passed**, none failed or skipped.
 - Recorded console plans: **13 passed**.
-- Line coverage: **410 / 420 = 97.62%**.
-- Branch coverage: **148 / 153 = 96.73%**.
+- Line coverage: **473 / 483 = 97.93%**.
+- Branch coverage: **166 / 171 = 97.08%**.
 - HTML: `build/reports/jacoco/test/html/index.html`.
 - XML: `build/reports/jacoco/test/jacocoTestReport.xml`.
 - JUnit details: `build/reports/tests/test/index.html`.
@@ -66,3 +66,16 @@ and reports the existing error with the physical line number. Regression tests
 cover malformed dates and invalid calendar dates, console startup, GUI startup,
 and preservation of the original saved file. The public API and save format do
 not change.
+
+## Windows CI output encoding
+
+The Windows run [34808158429](https://github.com/wtvlol/ip/actions/runs/34808158429)
+failed `StorageTest.saveTasks_allTypesAndEscapes_roundTripsAndOverwrites`: the child
+process printed `管道` as `??`. The escaped pipes and backslashes were intact, and
+all parser tests passed. The data-file round trip succeeded inside the child;
+information was lost when its default Windows console encoding produced stdout.
+
+`IsolatedProcess` explicitly sets both stdout and stderr to UTF-8, matching the
+parent's `Files.readString` decoding. `IsolatedProcessTest` checks the actual stream
+charsets and Unicode/delimiter output in a child JVM. The fix has been verified
+locally; a new Windows Actions run is needed after these changes are pushed.

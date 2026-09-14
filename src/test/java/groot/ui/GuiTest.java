@@ -3,7 +3,6 @@ package groot.ui;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,9 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -69,22 +66,27 @@ public class GuiTest {
                     new Main().start(stage);
                     assertTrue(stage.isShowing());
                     assertEquals("Groot", stage.getTitle());
-                    assertEquals(417, stage.getMinWidth());
-                    assertEquals(220, stage.getMinHeight());
+                    assertEquals(800, stage.getMinWidth());
+                    assertEquals(1000, stage.getWidth());
+                    assertEquals(600, stage.getMinHeight());
+                    assertEquals(720, stage.getHeight());
                     Parent root = stage.getScene().getRoot();
                     TextField input = (TextField) root.lookup("#userInput");
                     Button send = (Button) root.lookup("#sendButton");
                     VBox dialogs = (VBox) root.lookup("#dialogContainer");
                     ScrollPane scroll = (ScrollPane) root.lookup("#scrollPane");
                     assertNotNull(input);
-                    assertTrue(scroll.vvalueProperty().isBound());
+                    assertFalse(scroll.vvalueProperty().isBound());
+                    assertTrue(root.lookup("#welcomeCard").isVisible());
+                    assertTrue(send.isDisabled());
                     input.setText("   ");
-                    send.fire();
+                    input.fireEvent(new ActionEvent());
                     assertEquals(0, dialogs.getChildren().size());
                     input.setText("  unknown  ");
                     input.fireEvent(new ActionEvent());
                     assertEquals("", input.getText());
                     assertEquals(2, dialogs.getChildren().size());
+                    assertFalse(root.lookup("#welcomeCard").isManaged());
                     Label firstError = (Label) dialogs.getChildren().get(1).lookup("#dialog");
                     assertEquals("Error: Oops! I don't recognise that command.", firstError.getText());
                     assertTrue(firstError.getStyleClass().contains("error-label"));
@@ -101,17 +103,16 @@ public class GuiTest {
                     assertFalse(added.getStyleClass().contains("error-label"));
                     assertTrue(rejected.getStyleClass().contains("error-label"));
                     assertFalse(listed.getStyleClass().contains("error-label"));
-                    assertEquals(" Here are the tasks in your list:\n 1.[T][ ] first", listed.getText());
+                    assertEquals("Here are the tasks in your list:\n 1.[T][ ] first", listed.getText());
                     root.applyCss();
                     root.layout();
                     assertEquals(Color.web("#991b1b"), firstError.getTextFill());
                     assertTrue(firstError.getFont().getStyle().contains("Bold"));
-                    assertTrue(scroll.getVvalue() >= scroll.getVmax());
-                    for (var node : dialogs.getChildren()) {
-                        Image image = ((ImageView) node.lookup("#displayPicture")).getImage();
-                        assertFalse(image.isError());
-                        assertTrue(image.getWidth() > 0);
-                    }
+                    scroll.setVvalue(0);
+                    assertEquals(0, scroll.getVvalue());
+                    assertFalse(((ImageView) root.lookup("#grootArtwork")).getImage().isError());
+                    assertEquals("1 task · 0 completed", ((Label) root.lookup("#taskCount")).getText());
+
                 } finally {
                     stage.close();
                 }
@@ -129,19 +130,18 @@ public class GuiTest {
          */
         public static void main(String[] args) throws Exception {
             FxTestRuntime.run(() -> {
-                Image image = new WritableImage(2, 2);
-                DialogBox user = DialogBox.getUserDialog("hello", image);
-                DialogBox reply = DialogBox.getGrootDialog("reply", image);
-                DialogBox error = DialogBox.getErrorDialog("  bad command \n", image);
+                DialogBox user = DialogBox.getUserDialog("hello");
+                DialogBox reply = DialogBox.getGrootDialog("reply");
+                DialogBox error = DialogBox.getErrorDialog("  bad command \n");
                 VBox root = new VBox(user, reply, error);
-                new Scene(root);
+                new Scene(root, 600, 400);
                 root.applyCss();
                 root.layout();
                 assertEquals(Pos.TOP_RIGHT, user.getAlignment());
                 assertEquals(Pos.TOP_LEFT, reply.getAlignment());
                 assertTrue(user.getChildren().getFirst() instanceof Label);
-                assertTrue(reply.getChildren().getFirst() instanceof ImageView);
-                assertSame(image, ((ImageView) reply.lookup("#displayPicture")).getImage());
+                assertEquals("G", ((Label) reply.getChildren().getFirst()).getText());
+                assertEquals("You", ((Label) user.getChildren().getLast()).getText());
                 Label userLabel = (Label) user.lookup("#dialog");
                 Label replyLabel = (Label) reply.lookup("#dialog");
                 Label errorLabel = (Label) error.lookup("#dialog");

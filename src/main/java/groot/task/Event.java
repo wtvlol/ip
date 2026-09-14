@@ -24,6 +24,20 @@ public class Event extends Task {
     }
 
     /**
+     * Returns the event's start text.
+     */
+    public String getStart() {
+        return start;
+    }
+
+    /**
+     * Returns the event's end text.
+     */
+    public String getEnd() {
+        return end;
+    }
+
+    /**
      * Returns the event in the format used by the local data file.
      *
      * @return Pipe-separated event data.

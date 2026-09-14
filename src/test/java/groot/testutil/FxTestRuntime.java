@@ -16,10 +16,10 @@ public final class FxTestRuntime {
     /**
      * Starts the toolkit, executes assertions on its thread, and shuts it down.
      *
-     * @param action Test assertions and JavaFX operations.
+     * @param actions Ordered phases, each allowed to finish its queued UI updates before the next phase.
      * @throws Exception If initialization, assertions, or execution fail.
      */
-    public static void run(Runnable action) throws Exception {
+    public static void run(Runnable... actions) throws Exception {
         CountDownLatch ready = new CountDownLatch(1);
         Platform.startup(() -> {
             Platform.setImplicitExit(false);
@@ -29,9 +29,11 @@ public final class FxTestRuntime {
             if (!ready.await(10, TimeUnit.SECONDS)) {
                 throw new IllegalStateException("JavaFX startup timed out");
             }
-            FutureTask<Void> task = new FutureTask<>(action, null);
-            Platform.runLater(task);
-            task.get(15, TimeUnit.SECONDS);
+            for (Runnable action : actions) {
+                FutureTask<Void> task = new FutureTask<>(action, null);
+                Platform.runLater(task);
+                task.get(15, TimeUnit.SECONDS);
+            }
         } finally {
             Platform.exit();
         }
