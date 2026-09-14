@@ -32,17 +32,17 @@ public enum CommandType {
     /** Represents input that does not match a supported command. */
     UNKNOWN(false, "");
 
-    private final boolean acceptsArguments;
+    private final boolean canAcceptArguments;
     private final List<String> keywords;
 
     /**
      * Creates a command type with a canonical keyword and optional aliases.
      *
-     * @param acceptsArguments Whether text may follow the command keyword.
+     * @param canAcceptArguments Whether text may follow the command keyword.
      * @param keywords Canonical keyword followed by any aliases.
      */
-    CommandType(boolean acceptsArguments, String... keywords) {
-        this.acceptsArguments = acceptsArguments;
+    CommandType(boolean canAcceptArguments, String... keywords) {
+        this.canAcceptArguments = canAcceptArguments;
         this.keywords = List.of(keywords);
     }
 
@@ -79,6 +79,6 @@ public enum CommandType {
         }
         return keywords.stream()
                 .anyMatch(keyword -> command.equals(keyword)
-                        || (acceptsArguments && command.startsWith(keyword + " ")));
+                        || (canAcceptArguments && command.startsWith(keyword + " ")));
     }
 }
